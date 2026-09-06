@@ -10,3 +10,5 @@ Some aspects to consider,
 4. What is the serving cost comparison between these models?
 
 Real measurements and careful calculations are expected. 
+
+- Following task: focus more on Investigate the architecture of the different model families and present their similarities, differences, and, most importantly, performance implications. (read thei document carefully) + I want tables report about throughput + speculative decoding + which model more efficient ? update details and clear report in report.md 
