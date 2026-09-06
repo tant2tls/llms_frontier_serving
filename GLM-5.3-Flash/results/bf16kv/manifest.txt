@@ -1,0 +1,59 @@
+timestamp: 2026-09-02T10:49:19+00:00
+host: tan-8gpus-glm53-0-0
+model: zai-org/GLM-5.3-Flash
+base: http://localhost:8001
+
+## GPUs
+index, name, memory.total [MiB]
+0, NVIDIA H100 80GB HBM3, 81559 MiB
+1, NVIDIA H100 80GB HBM3, 81559 MiB
+2, NVIDIA H100 80GB HBM3, 81559 MiB
+3, NVIDIA H100 80GB HBM3, 81559 MiB
+4, NVIDIA H100 80GB HBM3, 81559 MiB
+5, NVIDIA H100 80GB HBM3, 81559 MiB
+6, NVIDIA H100 80GB HBM3, 81559 MiB
+7, NVIDIA H100 80GB HBM3, 81559 MiB
+
+## driver / versions
+575.57.08
+torch 2.13.0+cu130
+vllm 0.1.dev20051+g487ecf187
+
+## server command line
+/bin/bash -c source /prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/.claude/shell-snapshots/snapshot-bash-1788344038129-wkyghs.sh 2>/dev/null || true && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'cd /prj/corp/airesearch/lasvegas/vol22-scratch/users/tanngo/LLMs_serving_report/GLM-5.3-Flash && setsid nohup ./run.sh > logs/launch_s3_082_warm.log 2>&1 < /dev/null & sleep 6; pgrep -cf "vllm serve zai-org/GLM-5.3-Flash"; echo "launched warm"' && pwd -P >| /tmp/claude-23ba-cwd
+
+## quantization (from served config)
+QUANT=fp8-attn-dense+fp8-experts  KV_DTYPE=bfloat16   (override these per model -- see header)
+resolved from the LIVE server below, not hardcoded:
+  vllm:cache_config_info{_block_size_resolved="True"
+  block_size="640"
+  cache_dtype="auto"
+  gpu_memory_utilization="0.82"
+  kv_cache_dtype_skip_layers="[]"
+  mamba_block_size="128"
+  mamba_cache_dtype="auto"
+  mamba_ssm_cache_dtype="auto"
+  num_gpu_blocks="3064"
+  user_specified_block_size="True"
+  user_specified_mamba_block_size="False"} 1.0
+
+## MFU / bandwidth counter coverage  (--enable-mfu-metrics)
+Which ComponentMetrics vLLM instantiated for THIS model. Any component NOT
+listed is silently EXCLUDED from estimated_flops/read_bytes, so the achieved
+numbers are a LOWER BOUND whose gap DIFFERS PER MODEL -- which means the raw
+counters are NOT comparable across models without this table:
+  Instantiated ComponentMetrics [ffn] with (num_hidden_layers=45 hidden_size=4096 activation_byte_size=2 pp_size=1 ffn_tp_size=1 ffn_ep_size=8 intermediate_size=12288 num_experts=288 num_experts_per_tok=8 moe_intermediate_size=2048 num_shared_experts=1 num_moe_layers=42 weight_byte_size=1)
+  Instantiated ComponentMetrics [unembed] with (hidden_size=4096 vocab_size=154880 weight_byte_size=2 activation_byte_size=2 tp_size=8)
+⚠️ These counters are an ENGINE-SIDE ESTIMATE, not a hardware counter.
+   vLLM computes bytes/FLOPs per scheduler step from CONFIG SHAPES times
+   that step's real batch composition (perf.py:488-513, :1069-1127), so the
+   batch/context term is measured and bytes-per-token is modelled. Label [E].
+   perf.py:428 carries the TODO: 'discern cases where we have mixture of
+   different attention layer types such as SWA, MLA' -- that TODO is exactly
+   this report's thesis, which is why hybrid models lose their attn component.
+
+## grid provenance
+ISL points anchored to UW-SyFI/TraceLab v0.0.2 rounds table:
+  input_tokens_total  p50=132092 p90=338662 p99=856464
+  output_tokens       p50=249    p90=1332
+  prefix_tokens/input = 95.6% (mean), 98.8% of rounds have prefix>0

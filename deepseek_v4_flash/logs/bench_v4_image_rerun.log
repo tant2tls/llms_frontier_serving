@@ -1,0 +1,53 @@
+[1mvLLM sweep[0m  http://localhost:8002  model=deepseek-ai/DeepSeek-V4-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8002
+  [32mok[0m   serving: deepseek-ai/DeepSeek-V4-Flash
+  [32mok[0m   output dir: deepseek_v4_flash/results/mtp-off-image
+  [32mok[0m   wrote deepseek_v4_flash/results/mtp-off-image/manifest.txt
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+  [33mnote[0m skip batch_isl16k_c1 (result exists)
+
+  [1mbatch_isl16k_c4[0m  ISL=16384 OSL=256 conc=4 prompts=8 seed=55996
+    output tok/s   : 219.80528
+    total  tok/s   : 14358.608
+    req/s          : 0.858614
+    TTFT p50/p99 ms: 1906 / 2633
+    TPOT p50/p99 ms: 11 / 14
+    peak KV usage  : 0.171
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c16[0m  ISL=16384 OSL=256 conc=16 prompts=32 seed=151024
+    output tok/s   : 330.87943
+    total  tok/s   : 21614.440
+    req/s          : 1.292497
+    TTFT p50/p99 ms: 3946 / 9772
+    TPOT p50/p99 ms: 32 / 44
+    peak KV usage  : 0.198
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip batch_isl16k_c64 (result exists)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1            85.0     5554.8       717       7.9    0.166
+    batch_isl16k_c16          330.9    21614.4      3946      32.4    0.198
+    batch_isl16k_c4           219.8    14358.6      1906      10.7    0.171
+    batch_isl16k_c64          290.3    18965.0      3644     178.0    0.305
+    ctx_isl131072_c8           34.7    17794.8     26665     144.2    0.270
+    ctx_isl16384_c8           104.5     6826.9      3119      23.3    0.181
+    ctx_isl260000_c8           16.7    17002.6     61822     242.3    0.369
+    ctx_isl65536_c8            47.9    12313.8     12311     125.2    0.219
+    prefix_p64k_n1            198.2    52595.7      1079      12.3    0.000
+    prefix_p64k_n16           114.6    30408.4      8638      29.9    0.000
+    prefix_p64k_n4            391.6   103913.6      1124      11.6    0.000
+
+  results: deepseek_v4_flash/results/mtp-off-image
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

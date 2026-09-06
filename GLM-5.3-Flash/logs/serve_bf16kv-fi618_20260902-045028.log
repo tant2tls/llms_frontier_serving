@@ -1,0 +1,749 @@
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345] 
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345]        █     █     █▄   ▄█
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.1.dev20051+g487ecf187
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345]   █▄█▀ █     █     █     █  model   zai-org/GLM-5.3-Flash
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:345] 
+(APIServer pid=92347) INFO 09-02 04:50:48 [api_utils.py:273] non-default args: {'model_tag': 'zai-org/GLM-5.3-Flash', 'enable_auto_tool_choice': True, 'tool_call_parser': 'glm47', 'port': 8001, 'model': 'zai-org/GLM-5.3-Flash', 'max_model_len': 262144, 'reasoning_parser': 'glm45', 'tensor_parallel_size': 8, 'enable_expert_parallel': True, 'block_size': 128, 'gpu_memory_utilization': 0.82, 'limit_mm_per_prompt': {'image': 0, 'video': 0}, 'enable_mfu_metrics': True, 'max_num_seqs': 256, 'max_cudagraph_capture_size': 256, 'enable_flashinfer_autotune': False, 'kernel_config': KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=[], fused_add_rms_norm=[]), enable_flashinfer_autotune=None, enable_cutedsl_warmup=True, enable_jit_warmup=True, enable_bf16x3_router_gemm=False, moe_backend='deep_gemm', linear_backend='auto')}
+(APIServer pid=92347) INFO 09-02 04:50:49 [model.py:679] Resolved architecture: Glm5NextForConditionalGeneration
+(APIServer pid=92347) INFO 09-02 04:50:49 [model.py:1972] Using max model len 262144
+(APIServer pid=92347) INFO 09-02 04:50:58 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(APIServer pid=92347) INFO 09-02 04:50:58 [model.py:882] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(APIServer pid=92347) INFO 09-02 04:50:58 [scheduler.py:242] Chunked prefill is enabled with max_num_batched_tokens=8192.
+(APIServer pid=92347) INFO 09-02 04:50:58 [config.py:605] Mamba cache mode is set to 'align' for Glm5NextForConditionalGeneration by default when prefix caching is enabled
+(APIServer pid=92347) INFO 09-02 04:50:58 [vllm.py:1319] Auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH=1. Set VLLM_USE_BREAKABLE_CUDAGRAPH=0 to opt out.
+(APIServer pid=92347) INFO 09-02 04:50:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(APIServer pid=92347) INFO 09-02 04:50:58 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant, allreduce_rms
+(APIServer pid=92347) [transformers] The following generation flags are not valid and may be ignored: ['top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+(EngineCore pid=92892) INFO 09-02 04:51:22 [core.py:122] Initializing a V1 LLM engine (v0.1.dev20051+g487ecf187) with config: model='zai-org/GLM-5.3-Flash', speculative_config=None, tokenizer='zai-org/GLM-5.3-Flash', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=auto, tensor_parallel_size=8, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=fp8, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='glm45', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=True, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=zai-org/GLM-5.3-Flash, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['+quant_fp8', 'all', '+quant_fp8'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [64, 8192], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': True, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 256, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, enable_bf16x3_router_gemm=False, moe_backend='deep_gemm', linear_backend='auto')
+(EngineCore pid=92892) INFO 09-02 04:51:22 [multiproc_executor.py:149] DP group leader: node_rank=0, node_rank_within_dp=0, master_addr=127.0.0.1, mq_connect_ip=172.19.89.165 (local), world_size=8, local_world_size=8
+INFO 09-02 04:51:49 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=93356) INFO 09-02 04:51:49 [parallel_state.py:1638] world_size=8 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:52:07 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=93686) INFO 09-02 04:52:07 [parallel_state.py:1638] world_size=8 rank=1 local_rank=1 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:52:25 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=94310) INFO 09-02 04:52:25 [parallel_state.py:1638] world_size=8 rank=2 local_rank=2 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:52:42 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=94848) INFO 09-02 04:52:42 [parallel_state.py:1638] world_size=8 rank=3 local_rank=3 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:53:00 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=95131) INFO 09-02 04:53:00 [parallel_state.py:1638] world_size=8 rank=4 local_rank=4 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:53:17 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=95426) INFO 09-02 04:53:17 [parallel_state.py:1638] world_size=8 rank=5 local_rank=5 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:53:35 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=95737) INFO 09-02 04:53:35 [parallel_state.py:1638] world_size=8 rank=6 local_rank=6 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+INFO 09-02 04:53:52 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=96034) INFO 09-02 04:53:53 [parallel_state.py:1638] world_size=8 rank=7 local_rank=7 distributed_init_method=file:///tmp/vllm_dist_89fb975704c54f0590af966093c64df3 backend=nccl
+(Worker pid=93356) INFO 09-02 04:53:53 [pynccl.py:113] vLLM is using nccl==2.30.7
+(Worker pid=93356) INFO 09-02 04:53:56 [cuda_communicator.py:266] Using ['CUSTOM', 'SYMM_MEM', 'PYNCCL'] all-reduce backends (in dispatch order) for group 'tp:0' out of potential backends: ['NCCL_SYMM_MEM', 'QUICK_REDUCE', 'FLASHINFER', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=93356) INFO 09-02 04:53:57 [cuda_communicator.py:266] Using ['PYNCCL'] all-reduce backends (in dispatch order) for group 'ep:0' out of potential backends: ['NCCL_SYMM_MEM', 'QUICK_REDUCE', 'FLASHINFER', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=93356) INFO 09-02 04:53:57 [parallel_state.py:1982] rank 0 in world size 8 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank 0, EPLB rank N/A
+(Worker pid=93356) INFO 09-02 04:53:57 [gpu_worker.py:386] Using V2 Model Runner
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [model_runner.py:353] Loading model from scratch...
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [cuda.py:591] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [mm_encoder_attention.py:375] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant, allreduce_rms
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [__init__.py:662] Selected FlashInferFp8DeepGEMMDynamicBlockScaledKernel for Fp8LinearMethod
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [deep_gemm.py:191] deep_gemm not found in site-packages, trying vendored vllm.third_party.deep_gemm
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [deep_gemm.py:218] DeepGEMM PDL enabled on vllm.third_party.deep_gemm.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [deep_gemm.py:136] DeepGEMM E8M0 enabled on current platform.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:53:58 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [cuda.py:532] Using FLASHINFER_MLA_SPARSE_SM90 attention backend out of potential backends: ['FLASHINFER_MLA_SPARSE_SM90', 'FLASH_ATTN_MLA_SPARSE', 'FLASHMLA_SPARSE'].
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [selector.py:217] Using HND KV cache layout for FLASHINFER_MLA_SPARSE_SM90 backend.
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 04:53:58 [mla_attention.py:567] No MLA prefill backend supports this model; sparse MLA will use the top-k MQA path only (no dense-MHA prefill).
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [expert_map_manager.py:245] [EP Rank 0/8] Expert parallelism is enabled. Expert placement strategy: linear. Local/global number of experts: 36/288. Experts local to global index map: 0->0, 1->1, 2->2, 3->3, 4->4, 5->5, 6->6, 7->7, 8->8, 9->9, 10->10, 11->11, 12->12, 13->13, 14->14, 15->15, 16->16, 17->17, 18->18, 19->19, 20->20, 21->21, 22->22, 23->23, 24->24, 25->25, 26->26, 27->27, 28->28, 29->29, 30->30, 31->31, 32->32, 33->33, 34->34, 35->35.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:58 [fp8.py:325] Using DEEPGEMM Fp8 MoE backend out of potential backends: ['FLASHINFER_CUTLASS', 'AITER', 'FLASHINFER_TRTLLM', 'DEEPGEMM', 'VLLM_CUTLASS', 'TRITON', 'MARLIN', 'HUMMING', 'BATCHED_DEEPGEMM', 'BATCHED_VLLM_CUTLASS', 'BATCHED_TRITON', 'XPU', 'CPU', 'HPC'].
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:53:59 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:59 [weight_utils.py:858] Filesystem type for checkpoints: NFS. Checkpoint size: 305.79 GiB. Available RAM: 1405.67 GiB.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   0% Completed | 0/62 [00:00<?, ?it/s]
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:53:59 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   2% Completed | 1/62 [00:00<00:11,  5.27it/s]
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:00 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   3% Completed | 2/62 [00:00<00:10,  5.61it/s]
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:00 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   5% Completed | 3/62 [00:00<00:17,  3.46it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   6% Completed | 4/62 [00:01<00:21,  2.64it/s]
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/7)
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/7)
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/7)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/7)
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:01 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.26s
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/7)
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:   8% Completed | 5/62 [00:02<00:32,  1.77it/s]
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:01 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/7)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.41s
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.49s
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.48s
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.05s
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/7)
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.48s
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/7)
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  10% Completed | 6/62 [00:02<00:26,  2.08it/s]
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/7)
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.45s
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:02 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:02 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.43s
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  11% Completed | 7/62 [00:02<00:22,  2.45it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  13% Completed | 8/62 [00:03<00:19,  2.74it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  15% Completed | 9/62 [00:03<00:18,  2.93it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  16% Completed | 10/62 [00:03<00:16,  3.12it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  18% Completed | 11/62 [00:04<00:20,  2.49it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  19% Completed | 12/62 [00:04<00:18,  2.71it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  21% Completed | 13/62 [00:04<00:16,  2.89it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  23% Completed | 14/62 [00:05<00:15,  3.12it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  24% Completed | 15/62 [00:05<00:14,  3.20it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  26% Completed | 16/62 [00:05<00:14,  3.21it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  27% Completed | 17/62 [00:06<00:16,  2.70it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  29% Completed | 18/62 [00:06<00:15,  2.93it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  31% Completed | 19/62 [00:06<00:14,  3.05it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  32% Completed | 20/62 [00:07<00:13,  3.11it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  34% Completed | 21/62 [00:07<00:12,  3.31it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  35% Completed | 22/62 [00:07<00:14,  2.70it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  37% Completed | 23/62 [00:08<00:13,  2.89it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  39% Completed | 24/62 [00:08<00:12,  3.10it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  40% Completed | 25/62 [00:08<00:11,  3.26it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  42% Completed | 26/62 [00:08<00:10,  3.31it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  44% Completed | 27/62 [00:09<00:10,  3.32it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  45% Completed | 28/62 [00:09<00:12,  2.70it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  47% Completed | 29/62 [00:10<00:11,  2.91it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  48% Completed | 30/62 [00:10<00:10,  3.02it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  50% Completed | 31/62 [00:10<00:09,  3.15it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  52% Completed | 32/62 [00:11<00:11,  2.58it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  53% Completed | 33/62 [00:11<00:10,  2.77it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  55% Completed | 34/62 [00:11<00:09,  2.91it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  56% Completed | 35/62 [00:12<00:10,  2.52it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  58% Completed | 36/62 [00:12<00:09,  2.77it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  60% Completed | 37/62 [00:12<00:08,  2.93it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  61% Completed | 38/62 [00:13<00:07,  3.14it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  63% Completed | 39/62 [00:13<00:07,  3.23it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  65% Completed | 40/62 [00:13<00:08,  2.61it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  66% Completed | 41/62 [00:14<00:07,  2.79it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  68% Completed | 42/62 [00:14<00:06,  3.06it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  69% Completed | 43/62 [00:14<00:05,  3.17it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  71% Completed | 44/62 [00:15<00:05,  3.25it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  73% Completed | 45/62 [00:15<00:05,  3.37it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  74% Completed | 46/62 [00:15<00:05,  2.72it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  76% Completed | 47/62 [00:16<00:05,  2.89it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  77% Completed | 48/62 [00:16<00:04,  2.99it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  79% Completed | 49/62 [00:16<00:04,  3.22it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  81% Completed | 50/62 [00:17<00:03,  3.31it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  82% Completed | 51/62 [00:17<00:03,  3.27it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  84% Completed | 52/62 [00:17<00:02,  3.38it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  85% Completed | 53/62 [00:18<00:03,  2.77it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  87% Completed | 54/62 [00:18<00:02,  2.93it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  89% Completed | 55/62 [00:18<00:02,  3.01it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  90% Completed | 56/62 [00:19<00:01,  3.11it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  92% Completed | 57/62 [00:19<00:01,  3.15it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  94% Completed | 58/62 [00:19<00:01,  3.19it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  95% Completed | 59/62 [00:20<00:01,  2.70it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  97% Completed | 60/62 [00:20<00:00,  2.91it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards:  98% Completed | 61/62 [00:20<00:00,  3.06it/s]
+(Worker_TP0_EP0 pid=93356) Loading safetensors checkpoint shards: 100% Completed | 62/62 [00:20<00:00,  2.98it/s]
+(Worker_TP0_EP0 pid=93356) 
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:20 [default_loader.py:430] Loading weights took 20.81 seconds
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:23 [fp8.py:713] Using MoEPrepareAndFinalizeNoDPEPModular
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:24 [model_runner.py:374] Model loading took 38.28 GiB and 26.913513 seconds
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:24 [model_runner.py:374] Model loading took 38.28 GiB and 26.964141 seconds
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:24 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:54:24 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:24 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:54:24 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:25 [model_runner.py:374] Model loading took 38.28 GiB and 27.069811 seconds
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:25 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:54:25 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:25 [model_runner.py:374] Model loading took 38.28 GiB and 27.473915 seconds
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:25 [topk_topp_sampler.py:62] Using FlashInfer for top-p & top-k sampling.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:25 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:25 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:25 [model_runner.py:374] Model loading took 38.28 GiB and 27.727275 seconds
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:25 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:54:25 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:25 [model_runner.py:374] Model loading took 38.28 GiB and 27.811953 seconds
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:25 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:54:25 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:27 [model_runner.py:374] Model loading took 38.28 GiB and 29.185381 seconds
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:27 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:54:27 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:27 [model_runner.py:374] Model loading took 38.28 GiB and 29.732194 seconds
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:28 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:54:28 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=92892) INFO 09-02 04:54:28 [torch_utils.py:262] Reducing Torch threads from 32 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:31 [indexer.py:729] DSA indexer decode path: use_flattening=False supports_varlen=False (next_n=1, use_fp4_indexer_cache=False)
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:54:32 [breakable_cudagraph.py:288] Breakable CUDA graph enabled
+(Worker_TP0_EP0 pid=93356) Profiling CUDA graph memory (PIECEWISE):   0%|          | 0/35 [00:00<?, ?it/s]Profiling CUDA graph memory (PIECEWISE):   3%|▎         | 1/35 [00:15<08:36, 15.19s/it]Profiling CUDA graph memory (PIECEWISE):   6%|▌         | 2/35 [00:16<03:50,  6.99s/it]Profiling CUDA graph memory (PIECEWISE):   9%|▊         | 3/35 [00:17<02:21,  4.43s/it]Profiling CUDA graph memory (PIECEWISE):  11%|█▏        | 4/35 [00:18<01:36,  3.11s/it]Profiling CUDA graph memory (PIECEWISE):  14%|█▍        | 5/35 [00:20<01:16,  2.54s/it]Profiling CUDA graph memory (PIECEWISE):  17%|█▋        | 6/35 [00:21<00:57,  2.00s/it]Profiling CUDA graph memory (PIECEWISE):  20%|██        | 7/35 [00:22<00:45,  1.62s/it]Profiling CUDA graph memory (PIECEWISE):  23%|██▎       | 8/35 [00:23<00:37,  1.39s/it]Profiling CUDA graph memory (PIECEWISE):  26%|██▌       | 9/35 [00:24<00:32,  1.24s/it]Profiling CUDA graph memory (PIECEWISE):  29%|██▊       | 10/35 [00:24<00:27,  1.11s/it]Profiling CUDA graph memory (PIECEWISE):  31%|███▏      | 11/35 [00:25<00:24,  1.03s/it]Profiling CUDA graph memory (PIECEWISE):  34%|███▍      | 12/35 [00:26<00:21,  1.05it/s]Profiling CUDA graph memory (PIECEWISE):  37%|███▋      | 13/35 [00:27<00:19,  1.11it/s]Profiling CUDA graph memory (PIECEWISE):  40%|████      | 14/35 [00:28<00:18,  1.13it/s]Profiling CUDA graph memory (PIECEWISE):  43%|████▎     | 15/35 [00:28<00:17,  1.15it/s]Profiling CUDA graph memory (PIECEWISE):  46%|████▌     | 16/35 [00:29<00:15,  1.19it/s]Profiling CUDA graph memory (PIECEWISE):  49%|████▊     | 17/35 [00:30<00:15,  1.15it/s]Profiling CUDA graph memory (PIECEWISE):  51%|█████▏    | 18/35 [00:31<00:14,  1.15it/s]Profiling CUDA graph memory (PIECEWISE):  54%|█████▍    | 19/35 [00:32<00:13,  1.18it/s]Profiling CUDA graph memory (PIECEWISE):  57%|█████▋    | 20/35 [00:33<00:12,  1.19it/s]Profiling CUDA graph memory (PIECEWISE):  60%|██████    | 21/35 [00:33<00:11,  1.22it/s]Profiling CUDA graph memory (PIECEWISE):  63%|██████▎   | 22/35 [00:34<00:10,  1.23it/s]Profiling CUDA graph memory (PIECEWISE):  66%|██████▌   | 23/35 [00:35<00:09,  1.23it/s]Profiling CUDA graph memory (PIECEWISE):  69%|██████▊   | 24/35 [00:36<00:08,  1.23it/s]Profiling CUDA graph memory (PIECEWISE):  71%|███████▏  | 25/35 [00:37<00:08,  1.23it/s]Profiling CUDA graph memory (PIECEWISE):  74%|███████▍  | 26/35 [00:37<00:07,  1.24it/s]Profiling CUDA graph memory (PIECEWISE):  77%|███████▋  | 27/35 [00:38<00:06,  1.25it/s]Profiling CUDA graph memory (PIECEWISE):  80%|████████  | 28/35 [00:39<00:05,  1.23it/s]Profiling CUDA graph memory (PIECEWISE):  83%|████████▎ | 29/35 [00:40<00:04,  1.22it/s]Profiling CUDA graph memory (PIECEWISE):  86%|████████▌ | 30/35 [00:41<00:04,  1.24it/s]Profiling CUDA graph memory (PIECEWISE):  89%|████████▊ | 31/35 [00:42<00:04,  1.03s/it]Profiling CUDA graph memory (PIECEWISE):  91%|█████████▏| 32/35 [00:43<00:02,  1.05it/s]Profiling CUDA graph memory (PIECEWISE):  94%|█████████▍| 33/35 [00:44<00:02,  1.02s/it]Profiling CUDA graph memory (PIECEWISE):  97%|█████████▋| 34/35 [00:45<00:00,  1.00it/s]Profiling CUDA graph memory (PIECEWISE): 100%|██████████| 35/35 [00:47<00:00,  1.15s/it]Profiling CUDA graph memory (PIECEWISE): 100%|██████████| 35/35 [00:47<00:00,  1.35s/it]
+(Worker_TP0_EP0 pid=93356) Profiling CUDA graph memory (FULL):   0%|          | 0/35 [00:00<?, ?it/s]Profiling CUDA graph memory (FULL):   3%|▎         | 1/35 [00:00<00:09,  3.42it/s]Profiling CUDA graph memory (FULL):   6%|▌         | 2/35 [00:00<00:09,  3.45it/s]Profiling CUDA graph memory (FULL):   9%|▊         | 3/35 [00:00<00:09,  3.48it/s]Profiling CUDA graph memory (FULL):  11%|█▏        | 4/35 [00:01<00:09,  3.44it/s]Profiling CUDA graph memory (FULL):  14%|█▍        | 5/35 [00:01<00:08,  3.47it/s]Profiling CUDA graph memory (FULL):  17%|█▋        | 6/35 [00:01<00:08,  3.41it/s]Profiling CUDA graph memory (FULL):  20%|██        | 7/35 [00:02<00:08,  3.41it/s]Profiling CUDA graph memory (FULL):  23%|██▎       | 8/35 [00:02<00:07,  3.45it/s]Profiling CUDA graph memory (FULL):  26%|██▌       | 9/35 [00:02<00:07,  3.43it/s]Profiling CUDA graph memory (FULL):  29%|██▊       | 10/35 [00:02<00:07,  3.41it/s]Profiling CUDA graph memory (FULL):  31%|███▏      | 11/35 [00:03<00:06,  3.43it/s]Profiling CUDA graph memory (FULL):  34%|███▍      | 12/35 [00:03<00:06,  3.43it/s]Profiling CUDA graph memory (FULL):  37%|███▋      | 13/35 [00:03<00:06,  3.33it/s]Profiling CUDA graph memory (FULL):  40%|████      | 14/35 [00:04<00:06,  3.29it/s]Profiling CUDA graph memory (FULL):  43%|████▎     | 15/35 [00:04<00:06,  3.28it/s]Profiling CUDA graph memory (FULL):  46%|████▌     | 16/35 [00:04<00:05,  3.37it/s]Profiling CUDA graph memory (FULL):  49%|████▊     | 17/35 [00:05<00:05,  3.37it/s]Profiling CUDA graph memory (FULL):  51%|█████▏    | 18/35 [00:05<00:04,  3.42it/s]Profiling CUDA graph memory (FULL):  54%|█████▍    | 19/35 [00:05<00:04,  3.44it/s]Profiling CUDA graph memory (FULL):  57%|█████▋    | 20/35 [00:05<00:04,  3.34it/s]Profiling CUDA graph memory (FULL):  60%|██████    | 21/35 [00:06<00:04,  3.41it/s]Profiling CUDA graph memory (FULL):  63%|██████▎   | 22/35 [00:06<00:03,  3.43it/s]Profiling CUDA graph memory (FULL):  66%|██████▌   | 23/35 [00:06<00:03,  3.43it/s]Profiling CUDA graph memory (FULL):  69%|██████▊   | 24/35 [00:07<00:03,  3.43it/s]Profiling CUDA graph memory (FULL):  71%|███████▏  | 25/35 [00:07<00:02,  3.50it/s]Profiling CUDA graph memory (FULL):  74%|███████▍  | 26/35 [00:07<00:02,  3.44it/s]Profiling CUDA graph memory (FULL):  77%|███████▋  | 27/35 [00:07<00:02,  3.48it/s]Profiling CUDA graph memory (FULL):  80%|████████  | 28/35 [00:08<00:02,  3.37it/s]Profiling CUDA graph memory (FULL):  83%|████████▎ | 29/35 [00:08<00:01,  3.39it/s]Profiling CUDA graph memory (FULL):  86%|████████▌ | 30/35 [00:08<00:01,  3.52it/s]Profiling CUDA graph memory (FULL):  89%|████████▊ | 31/35 [00:09<00:01,  3.64it/s]Profiling CUDA graph memory (FULL):  91%|█████████▏| 32/35 [00:09<00:00,  3.72it/s](EngineCore pid=92892) INFO 09-02 04:55:29 [shm_broadcast.py:801] No available shared memory broadcast block found in 60 seconds. This typically happens when some processes are hanging or doing some time-consuming work (e.g. compilation, weight/kv cache quantization).
+Profiling CUDA graph memory (FULL):  94%|█████████▍| 33/35 [00:09<00:00,  3.80it/s]Profiling CUDA graph memory (FULL):  97%|█████████▋| 34/35 [00:09<00:00,  3.86it/s]Profiling CUDA graph memory (FULL): 100%|██████████| 35/35 [00:10<00:00,  3.95it/s]Profiling CUDA graph memory (FULL): 100%|██████████| 35/35 [00:10<00:00,  3.49it/s]
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.72 GiB total
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.7983 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8417. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.72 GiB total
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:55:30 [gpu_worker.py:564] Available KV cache memory: 22.05 GiB
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.7983 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8417. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:55:30 [model_runner.py:952] Estimated CUDA graph memory: 1.20 GiB total
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:55:30 [gpu_worker.py:579] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8200 is equivalent to --gpu-memory-utilization=0.8048 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.8352. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=92892) INFO 09-02 04:55:30 [kv_cache_utils.py:2141] GPU KV cache size: 1,990,167 tokens, Maximum concurrency for 262,144 tokens per request: 7.59x
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:55:31 [kernel_warmup.py:95] Warming up ll_bf16 router GEMM kernels for shapes: ((4096, 288),).
+(Worker_TP0_EP0 pid=93356) DeepGEMM warmup:   0%|          | 0/1455 [00:00<?, ?it/s]DeepGEMM warmup:  83%|████████▎ | 1212/1455 [00:00<00:00, 2394.23it/s]DeepGEMM warmup: 100%|██████████| 1455/1455 [00:00<00:00, 2825.10it/s]
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:55:32 [kernel_warmup.py:170] Skipping FlashInfer autotune because it is disabled.
+(Worker_TP0_EP0 pid=93356) Capturing CUDA graphs (PIECEWISE):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):   3%|▎         | 1/35 [00:00<00:30,  1.13it/s]Capturing CUDA graphs (PIECEWISE):   6%|▌         | 2/35 [00:01<00:30,  1.09it/s]Capturing CUDA graphs (PIECEWISE):   9%|▊         | 3/35 [00:02<00:28,  1.12it/s]Capturing CUDA graphs (PIECEWISE):  11%|█▏        | 4/35 [00:03<00:27,  1.11it/s]Capturing CUDA graphs (PIECEWISE):  14%|█▍        | 5/35 [00:04<00:29,  1.03it/s]Capturing CUDA graphs (PIECEWISE):  17%|█▋        | 6/35 [00:05<00:29,  1.01s/it]Capturing CUDA graphs (PIECEWISE):  20%|██        | 7/35 [00:07<00:30,  1.08s/it]Capturing CUDA graphs (PIECEWISE):  23%|██▎       | 8/35 [00:08<00:28,  1.07s/it]Capturing CUDA graphs (PIECEWISE):  26%|██▌       | 9/35 [00:09<00:27,  1.06s/it]Capturing CUDA graphs (PIECEWISE):  29%|██▊       | 10/35 [00:10<00:26,  1.07s/it]Capturing CUDA graphs (PIECEWISE):  31%|███▏      | 11/35 [00:11<00:27,  1.16s/it]Capturing CUDA graphs (PIECEWISE):  34%|███▍      | 12/35 [00:12<00:26,  1.17s/it]Capturing CUDA graphs (PIECEWISE):  37%|███▋      | 13/35 [00:13<00:25,  1.14s/it]Capturing CUDA graphs (PIECEWISE):  40%|████      | 14/35 [00:14<00:23,  1.13s/it]Capturing CUDA graphs (PIECEWISE):  43%|████▎     | 15/35 [00:15<00:21,  1.09s/it]Capturing CUDA graphs (PIECEWISE):  46%|████▌     | 16/35 [00:17<00:20,  1.10s/it]Capturing CUDA graphs (PIECEWISE):  49%|████▊     | 17/35 [00:17<00:18,  1.04s/it]Capturing CUDA graphs (PIECEWISE):  51%|█████▏    | 18/35 [00:18<00:16,  1.03it/s]Capturing CUDA graphs (PIECEWISE):  54%|█████▍    | 19/35 [00:19<00:14,  1.08it/s]Capturing CUDA graphs (PIECEWISE):  57%|█████▋    | 20/35 [00:20<00:13,  1.11it/s]Capturing CUDA graphs (PIECEWISE):  60%|██████    | 21/35 [00:21<00:12,  1.15it/s]Capturing CUDA graphs (PIECEWISE):  63%|██████▎   | 22/35 [00:22<00:11,  1.17it/s]Capturing CUDA graphs (PIECEWISE):  66%|██████▌   | 23/35 [00:22<00:10,  1.16it/s]Capturing CUDA graphs (PIECEWISE):  69%|██████▊   | 24/35 [00:23<00:09,  1.18it/s]Capturing CUDA graphs (PIECEWISE):  71%|███████▏  | 25/35 [00:24<00:08,  1.19it/s]Capturing CUDA graphs (PIECEWISE):  74%|███████▍  | 26/35 [00:25<00:07,  1.18it/s]Capturing CUDA graphs (PIECEWISE):  77%|███████▋  | 27/35 [00:26<00:06,  1.20it/s]Capturing CUDA graphs (PIECEWISE):  80%|████████  | 28/35 [00:27<00:05,  1.20it/s]Capturing CUDA graphs (PIECEWISE):  83%|████████▎ | 29/35 [00:27<00:05,  1.18it/s]Capturing CUDA graphs (PIECEWISE):  86%|████████▌ | 30/35 [00:28<00:04,  1.22it/s]Capturing CUDA graphs (PIECEWISE):  89%|████████▊ | 31/35 [00:29<00:03,  1.25it/s]Capturing CUDA graphs (PIECEWISE):  91%|█████████▏| 32/35 [00:30<00:02,  1.26it/s]Capturing CUDA graphs (PIECEWISE):  94%|█████████▍| 33/35 [00:31<00:01,  1.25it/s]Capturing CUDA graphs (PIECEWISE):  97%|█████████▋| 34/35 [00:31<00:00,  1.25it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 35/35 [00:32<00:00,  1.27it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 35/35 [00:32<00:00,  1.07it/s]
+(Worker_TP0_EP0 pid=93356) Capturing CUDA graphs (FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):   3%|▎         | 1/35 [00:00<00:13,  2.59it/s]Capturing CUDA graphs (FULL):   6%|▌         | 2/35 [00:00<00:11,  2.98it/s]Capturing CUDA graphs (FULL):   9%|▊         | 3/35 [00:00<00:09,  3.21it/s]Capturing CUDA graphs (FULL):  11%|█▏        | 4/35 [00:01<00:09,  3.31it/s]Capturing CUDA graphs (FULL):  14%|█▍        | 5/35 [00:01<00:08,  3.36it/s]Capturing CUDA graphs (FULL):  17%|█▋        | 6/35 [00:01<00:08,  3.40it/s]Capturing CUDA graphs (FULL):  20%|██        | 7/35 [00:02<00:08,  3.44it/s]Capturing CUDA graphs (FULL):  23%|██▎       | 8/35 [00:02<00:07,  3.49it/s]Capturing CUDA graphs (FULL):  26%|██▌       | 9/35 [00:02<00:07,  3.50it/s]Capturing CUDA graphs (FULL):  29%|██▊       | 10/35 [00:02<00:07,  3.51it/s]Capturing CUDA graphs (FULL):  31%|███▏      | 11/35 [00:03<00:06,  3.50it/s]Capturing CUDA graphs (FULL):  34%|███▍      | 12/35 [00:03<00:06,  3.51it/s]Capturing CUDA graphs (FULL):  37%|███▋      | 13/35 [00:03<00:06,  3.50it/s]Capturing CUDA graphs (FULL):  40%|████      | 14/35 [00:04<00:06,  3.42it/s]Capturing CUDA graphs (FULL):  43%|████▎     | 15/35 [00:04<00:05,  3.45it/s]Capturing CUDA graphs (FULL):  46%|████▌     | 16/35 [00:04<00:05,  3.41it/s]Capturing CUDA graphs (FULL):  49%|████▊     | 17/35 [00:05<00:05,  3.30it/s]Capturing CUDA graphs (FULL):  51%|█████▏    | 18/35 [00:05<00:05,  3.27it/s]Capturing CUDA graphs (FULL):  54%|█████▍    | 19/35 [00:05<00:04,  3.32it/s]Capturing CUDA graphs (FULL):  57%|█████▋    | 20/35 [00:05<00:04,  3.40it/s]Capturing CUDA graphs (FULL):  60%|██████    | 21/35 [00:06<00:04,  3.42it/s]Capturing CUDA graphs (FULL):  63%|██████▎   | 22/35 [00:06<00:03,  3.39it/s]Capturing CUDA graphs (FULL):  66%|██████▌   | 23/35 [00:06<00:03,  3.48it/s]Capturing CUDA graphs (FULL):  69%|██████▊   | 24/35 [00:07<00:03,  3.43it/s]Capturing CUDA graphs (FULL):  71%|███████▏  | 25/35 [00:07<00:02,  3.51it/s]Capturing CUDA graphs (FULL):  74%|███████▍  | 26/35 [00:07<00:02,  3.56it/s]Capturing CUDA graphs (FULL):  77%|███████▋  | 27/35 [00:07<00:02,  3.55it/s]Capturing CUDA graphs (FULL):  80%|████████  | 28/35 [00:08<00:01,  3.51it/s]Capturing CUDA graphs (FULL):  83%|████████▎ | 29/35 [00:08<00:01,  3.56it/s]Capturing CUDA graphs (FULL):  86%|████████▌ | 30/35 [00:08<00:01,  3.67it/s]Capturing CUDA graphs (FULL):  89%|████████▊ | 31/35 [00:08<00:01,  3.77it/s]Capturing CUDA graphs (FULL):  91%|█████████▏| 32/35 [00:09<00:00,  3.84it/s]Capturing CUDA graphs (FULL):  94%|█████████▍| 33/35 [00:09<00:00,  3.89it/s]Capturing CUDA graphs (FULL):  97%|█████████▋| 34/35 [00:09<00:00,  3.93it/s]Capturing CUDA graphs (FULL): 100%|██████████| 35/35 [00:09<00:00,  3.99it/s]Capturing CUDA graphs (FULL): 100%|██████████| 35/35 [00:09<00:00,  3.52it/s]
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.47/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=23019278439` (21.44 GiB) to fit into requested memory, or `--kv-cache-memory=35418728960` (32.99 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.56 GiB.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.39/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=23019278439` (21.44 GiB) to fit into requested memory, or `--kv-cache-memory=35325471232` (32.9 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.56 GiB.
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.72 GiB (estimated), difference: 0.74 GiB (75.4%).
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.93/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 3.04 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=22466089063` (20.92 GiB) to fit into requested memory, or `--kv-cache-memory=35349588480` (32.92 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.05 GiB.
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.39/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=23019278439` (21.44 GiB) to fit into requested memory, or `--kv-cache-memory=35325733376` (32.9 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.56 GiB.
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.38/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=23019278439` (21.44 GiB) to fit into requested memory, or `--kv-cache-memory=35322063360` (32.9 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.56 GiB.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.72 GiB (estimated), difference: 0.74 GiB (75.4%).
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:56:15 [model_runner.py:1012] Graph capturing finished in 43 secs, took 0.98 GiB
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.94/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.84 GiB for consumed memory (weights + non-torch), 3.04 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=22466089063` (20.92 GiB) to fit into requested memory, or `--kv-cache-memory=35365054976` (32.94 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.05 GiB.
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.94/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 40.36 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=22466089063` (20.92 GiB) to fit into requested memory, or `--kv-cache-memory=35361909248` (32.93 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.05 GiB.
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:56:15 [gpu_worker.py:727] CUDA graph pool memory: 0.98 GiB (actual), 1.2 GiB (estimated), difference: 0.22 GiB (22.8%).
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:56:15 [gpu_worker.py:790] Free memory on device (76.98/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 40.36 GiB for consumed memory (weights + non-torch), 2.52 GiB for peak activation, and 0.98 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=22466089063` (20.92 GiB) to fit into requested memory, or `--kv-cache-memory=35413355008` (32.98 GiB) to fully utilize gpu memory. Current kv cache memory in use is 22.05 GiB.
+(Worker_TP3_EP3 pid=94848) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP6_EP6 pid=95737) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP4_EP4 pid=95131) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP7_EP7 pid=96034) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP2_EP2 pid=94310) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP1_EP1 pid=93686) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP5_EP5 pid=95426) INFO 09-02 04:56:16 [jit_monitor.py:79] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP0_EP0 pid=93356) INFO 09-02 04:56:16 [torch_utils.py:262] Reducing Torch threads from 32 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=92892) INFO 09-02 04:56:16 [core.py:363] init engine (profile, create kv cache, warmup model) took 108.75 s
+(EngineCore pid=92892) INFO 09-02 04:56:21 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(EngineCore pid=92892) INFO 09-02 04:56:21 [perf.py:1279] Instantiated ComponentMetrics [ffn] with (num_hidden_layers=45 hidden_size=4096 activation_byte_size=2 pp_size=1 ffn_tp_size=1 ffn_ep_size=8 intermediate_size=12288 num_experts=288 num_experts_per_tok=8 moe_intermediate_size=2048 num_shared_experts=1 num_moe_layers=42 weight_byte_size=1)
+(EngineCore pid=92892) INFO 09-02 04:56:21 [perf.py:1279] Instantiated ComponentMetrics [unembed] with (hidden_size=4096 vocab_size=154880 weight_byte_size=2 activation_byte_size=2 tp_size=8)
+(EngineCore pid=92892) INFO 09-02 04:56:21 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(EngineCore pid=92892) INFO 09-02 04:56:22 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant, allreduce_rms
+(APIServer pid=92347) INFO 09-02 04:56:22 [api_server.py:678] Supported tasks: ['generate']
+(APIServer pid=92347) INFO 09-02 04:56:22 [parser_manager.py:37] "auto" tool choice has been enabled.
+(APIServer pid=92347) INFO 09-02 04:56:24 [hf.py:551] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=92347) WARNING 09-02 04:56:24 [model.py:1720] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'temperature': 1.0, 'top_p': 0.95}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+(APIServer pid=92347) INFO 09-02 04:56:24 [api_server.py:682] Starting vLLM server on http://0.0.0.0:8001
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:51] Available routes are:
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /openapi.json, Methods: GET, HEAD
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /docs, Methods: GET, HEAD
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /docs/oauth2-redirect, Methods: GET, HEAD
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /redoc, Methods: GET, HEAD
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /load, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /version, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /health, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /metrics, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /tokenize, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /detokenize, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/models, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /ping, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /ping, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /invocations, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/chat/completions, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/chat/completions/batch, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/responses, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/responses/{response_id}, Methods: GET
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/responses/{response_id}/cancel, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/completions, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/messages, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/messages/count_tokens, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /generative_scoring, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /scale_elastic_ep, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /is_scaling_elastic_ep, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/chat/completions/render, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/completions/render, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/chat/completions/derender, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /v1/completions/derender, Methods: POST
+(APIServer pid=92347) INFO 09-02 04:56:24 [launcher.py:60] Route: /inference/v1/generate, Methods: POST
+(APIServer pid=92347) INFO:     Started server process [92347]
+(APIServer pid=92347) INFO:     Waiting for application startup.
+(APIServer pid=92347) INFO:     Application startup complete.
+(APIServer pid=92347) INFO:     127.0.0.1:49994 - "GET /health HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:55208 - "GET /health HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:55212 - "GET /v1/models HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59326 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59334 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59336 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59342 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59358 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:59368 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:46256 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:46260 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:46262 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:46276 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:46292 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58910 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58918 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58926 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58940 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58952 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44858 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44860 - "POST /tokenize HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44870 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 04:59:19 [jit_monitor.py:135] TileLang JIT compilation during inference: mhc_pre_big_fuse_with_norm_tilelang. This causes a latency spike; consider extending warmup to cover this shape/config.
+(APIServer pid=92347) INFO:     127.0.0.1:44896 - "GET /metrics HTTP/1.1" 200 OK
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 04:59:20 [jit_monitor.py:135] Triton kernel JIT compilation during inference: _kpool_tail_seed_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(APIServer pid=92347) INFO:     127.0.0.1:44908 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44918 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 04:59:25 [loggers.py:310] Engine 000: Avg prompt throughput: 3279.1 tokens/s, Avg generation throughput: 41.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 1.1%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 04:59:25 [perf.py:1529] Engine 000: MFU: 0.9 TF/s/GPU 8.5 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:45322 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45338 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45350 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45362 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45368 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 04:59:35 [loggers.py:310] Engine 000: Avg prompt throughput: 4918.7 tokens/s, Avg generation throughput: 73.5 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 1.1%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 04:59:35 [perf.py:1529] Engine 000: MFU: 25.6 TF/s/GPU 267.8 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:50546 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:50560 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:50570 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:50578 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:50584 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 04:59:45 [loggers.py:310] Engine 000: Avg prompt throughput: 4918.5 tokens/s, Avg generation throughput: 73.2 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 1.1%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 04:59:45 [perf.py:1529] Engine 000: MFU: 25.6 TF/s/GPU 267.0 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:58076 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44882 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58082 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58088 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58104 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58110 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58124 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58130 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 04:59:55 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 17.1 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 04:59:55 [perf.py:1529] Engine 000: MFU: 0.1 TF/s/GPU 47.0 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:35932 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35934 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35946 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35952 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35964 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:00:05 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO:     127.0.0.1:41684 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:41694 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:41706 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:41718 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:41726 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34120 - "POST /tokenize HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34126 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34134 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34134 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34134 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34138 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34142 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34152 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 05:00:17 [jit_monitor.py:135] Triton kernel JIT compilation during inference: l2norm_fwd_kernel2. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 05:00:17 [jit_monitor.py:135] Triton kernel JIT compilation during inference: _kpool_softmax_rotate_write_cache_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP0_EP0 pid=93356) WARNING 09-02 05:00:17 [jit_monitor.py:135] Triton kernel JIT compilation during inference: _count_expert_num_tokens. This causes a latency spike; consider extending warmup to cover this shape/config.
+(APIServer pid=92347) INFO:     127.0.0.1:34160 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34174 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34190 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34134 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34138 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34142 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34152 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34194 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:00:25 [loggers.py:310] Engine 000: Avg prompt throughput: 9837.4 tokens/s, Avg generation throughput: 103.0 tokens/s, Running: 4 reqs, Waiting: 0 reqs, GPU KV cache usage: 4.6%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:00:25 [perf.py:1529] Engine 000: MFU: 20.7 TF/s/GPU 88.0 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:35418 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35424 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34134 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34138 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35432 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35446 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35458 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35462 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35472 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35484 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:00:35 [loggers.py:310] Engine 000: Avg prompt throughput: 3279.2 tokens/s, Avg generation throughput: 101.8 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:00:35 [perf.py:1529] Engine 000: MFU: 6.2 TF/s/GPU 166.1 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:45700 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45716 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45718 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45728 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:45734 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:00:45 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO:     127.0.0.1:49472 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:49486 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:49490 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:49504 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:49514 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52170 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52172 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52178 - "POST /tokenize HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52184 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52196 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52196 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52196 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52222 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52206 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52212 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52238 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52230 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52254 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52264 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52276 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52284 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52294 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52310 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52326 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52342 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52354 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52358 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52374 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52380 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:01:05 [loggers.py:310] Engine 000: Avg prompt throughput: 8198.0 tokens/s, Avg generation throughput: 3.0 tokens/s, Running: 7 reqs, Waiting: 9 reqs, GPU KV cache usage: 8.2%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:01:05 [perf.py:1529] Engine 000: MFU: 17.4 TF/s/GPU 30.6 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:56394 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56398 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56408 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56418 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53044 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:01:15 [loggers.py:310] Engine 000: Avg prompt throughput: 18031.5 tokens/s, Avg generation throughput: 297.3 tokens/s, Running: 16 reqs, Waiting: 0 reqs, GPU KV cache usage: 19.4%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:01:15 [perf.py:1529] Engine 000: MFU: 84.0 TF/s/GPU 469.3 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:52196 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52222 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52206 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52212 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53046 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52238 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52230 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52254 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53048 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52264 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52276 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52284 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53054 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52294 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52310 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52326 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53068 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52342 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52354 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52358 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:01:25 [loggers.py:310] Engine 000: Avg prompt throughput: 19673.7 tokens/s, Avg generation throughput: 126.0 tokens/s, Running: 14 reqs, Waiting: 1 reqs, GPU KV cache usage: 16.9%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:01:25 [perf.py:1529] Engine 000: MFU: 113.5 TF/s/GPU 303.4 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:36054 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36062 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36066 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36078 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52196 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:52222 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36082 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36098 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36112 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:36116 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:01:35 [loggers.py:310] Engine 000: Avg prompt throughput: 6558.0 tokens/s, Avg generation throughput: 392.8 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:01:35 [perf.py:1529] Engine 000: MFU: 23.9 TF/s/GPU 493.6 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:39240 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:39244 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:39252 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:39264 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:39272 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:01:45 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO:     127.0.0.1:60604 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60620 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60624 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60630 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37714 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37720 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37732 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37734 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37744 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34472 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34476 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34482 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34494 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34504 - "POST /tokenize HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34510 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34510 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34510 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34540 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34546 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34556 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34560 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34566 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34584 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34528 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34582 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34598 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34650 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34670 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34682 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34688 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34722 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34744 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34630 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34704 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34714 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34772 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34810 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34836 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34842 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34870 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34888 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34890 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34892 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34924 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34940 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34958 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35078 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34972 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34980 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35004 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35032 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35044 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35060 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34606 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34616 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34646 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34674 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34690 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34728 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34828 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34884 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34948 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35064 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34628 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34664 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34748 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34770 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34786 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34792 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34800 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34824 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34832 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34856 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34922 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35070 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34758 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34992 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35016 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35022 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:02:15 [loggers.py:310] Engine 000: Avg prompt throughput: 4918.8 tokens/s, Avg generation throughput: 1.2 tokens/s, Running: 5 reqs, Waiting: 59 reqs, GPU KV cache usage: 5.8%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:02:15 [perf.py:1529] Engine 000: MFU: 9.0 TF/s/GPU 15.8 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:60094 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60102 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60110 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60114 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60122 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:02:25 [loggers.py:310] Engine 000: Avg prompt throughput: 26231.5 tokens/s, Avg generation throughput: 36.1 tokens/s, Running: 21 reqs, Waiting: 43 reqs, GPU KV cache usage: 24.7%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:02:25 [perf.py:1529] Engine 000: MFU: 129.6 TF/s/GPU 226.4 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:40024 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:40040 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:40054 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:40066 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:40068 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:02:35 [loggers.py:310] Engine 000: Avg prompt throughput: 24593.8 tokens/s, Avg generation throughput: 85.3 tokens/s, Running: 36 reqs, Waiting: 28 reqs, GPU KV cache usage: 43.4%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:02:35 [perf.py:1529] Engine 000: MFU: 129.7 TF/s/GPU 226.4 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:44190 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44196 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44206 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44222 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:44236 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:02:45 [loggers.py:310] Engine 000: Avg prompt throughput: 24592.1 tokens/s, Avg generation throughput: 134.4 tokens/s, Running: 51 reqs, Waiting: 13 reqs, GPU KV cache usage: 61.8%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:02:45 [perf.py:1529] Engine 000: MFU: 129.9 TF/s/GPU 226.6 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:58288 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58304 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58310 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58318 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58320 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:02:55 [loggers.py:310] Engine 000: Avg prompt throughput: 24585.5 tokens/s, Avg generation throughput: 420.1 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 77.7%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:02:55 [perf.py:1529] Engine 000: MFU: 116.9 TF/s/GPU 363.5 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:56554 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34510 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34540 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56564 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34546 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34556 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34560 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56568 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34566 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34584 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34528 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34582 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56574 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34598 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34650 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:56578 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34670 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34682 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:05 [loggers.py:310] Engine 000: Avg prompt throughput: 18035.2 tokens/s, Avg generation throughput: 714.5 tokens/s, Running: 62 reqs, Waiting: 1 reqs, GPU KV cache usage: 75.8%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:05 [perf.py:1529] Engine 000: MFU: 100.6 TF/s/GPU 525.8 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:34688 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34722 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:54458 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34744 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34630 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34704 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:54472 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34714 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34772 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34810 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:54478 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34836 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34842 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34870 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:54490 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34888 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34890 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34892 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:54496 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34924 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:15 [loggers.py:310] Engine 000: Avg prompt throughput: 24590.2 tokens/s, Avg generation throughput: 194.1 tokens/s, Running: 62 reqs, Waiting: 1 reqs, GPU KV cache usage: 74.9%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:15 [perf.py:1529] Engine 000: MFU: 130.2 TF/s/GPU 226.8 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:34940 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37122 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34958 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34972 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34980 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35004 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37124 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35032 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35044 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37126 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35060 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34606 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34616 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34646 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37136 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34674 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34690 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34728 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:37150 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34828 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:25 [loggers.py:310] Engine 000: Avg prompt throughput: 24583.5 tokens/s, Avg generation throughput: 193.8 tokens/s, Running: 62 reqs, Waiting: 1 reqs, GPU KV cache usage: 75.3%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:25 [perf.py:1529] Engine 000: MFU: 130.2 TF/s/GPU 226.7 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:34884 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34948 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60826 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35064 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34628 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34664 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60838 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34748 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34770 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34786 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60842 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34792 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34800 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34824 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60844 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34832 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34856 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34922 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:60860 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35070 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:35 [loggers.py:310] Engine 000: Avg prompt throughput: 26223.3 tokens/s, Avg generation throughput: 193.9 tokens/s, Running: 63 reqs, Waiting: 1 reqs, GPU KV cache usage: 75.7%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:35 [perf.py:1529] Engine 000: MFU: 130.4 TF/s/GPU 226.9 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:34758 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34992 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53030 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35016 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:35022 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53042 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53044 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53056 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:53064 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:45 [loggers.py:310] Engine 000: Avg prompt throughput: 11477.0 tokens/s, Avg generation throughput: 1254.9 tokens/s, Running: 21 reqs, Waiting: 0 reqs, GPU KV cache usage: 25.8%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:45 [perf.py:1529] Engine 000: MFU: 60.6 TF/s/GPU 921.0 GB/s/GPU
+(APIServer pid=92347) INFO:     127.0.0.1:34510 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:34512 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO:     127.0.0.1:58614 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=92347) INFO 09-02 05:03:55 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 48.2 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=92347) INFO 09-02 05:03:55 [perf.py:1529] Engine 000: MFU: 0.3 TF/s/GPU 58.8 GB/s/GPU
+(APIServer pid=92347) INFO 09-02 05:04:05 [loggers.py:310] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(Worker_TP0_EP0 pid=93356) INFO 09-02 05:11:15 [multiproc_executor.py:819] Parent process exited, terminating worker queues
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked shared_memory objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

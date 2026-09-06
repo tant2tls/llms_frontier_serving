@@ -1,0 +1,49 @@
+timestamp: 2026-09-01T17:14:31+00:00
+host: tan-8gpus-moe-0-0
+model: deepseek-ai/DeepSeek-V4-Flash
+base: http://localhost:8000
+
+## GPUs
+index, name, memory.total [MiB]
+0, NVIDIA H100 80GB HBM3, 81559 MiB
+1, NVIDIA H100 80GB HBM3, 81559 MiB
+2, NVIDIA H100 80GB HBM3, 81559 MiB
+3, NVIDIA H100 80GB HBM3, 81559 MiB
+4, NVIDIA H100 80GB HBM3, 81559 MiB
+5, NVIDIA H100 80GB HBM3, 81559 MiB
+6, NVIDIA H100 80GB HBM3, 81559 MiB
+7, NVIDIA H100 80GB HBM3, 81559 MiB
+
+## driver / versions
+575.57.08
+torch 2.13.0+cu129
+vllm 0.28.0
+
+## server command line
+/prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/vllm-py12/bin/python3 /prj/corp/airesearch/lasvegas/vol11-scratch/tanngo/miniconda3/envs/vllm-py12/bin/vllm serve deepseek-ai/DeepSeek-V4-Flash --trust-remote-code --kv-cache-dtype fp8 --block-size 256 --enable-expert-parallel --tensor-parallel-size 8 --gpu-memory-utilization 0.82 --tokenizer-mode deepseek_v4 --tool-call-parser deepseek_v4 --enable-auto-tool-choice --reasoning-parser deepseek_v4 --reasoning-config {"reasoning_parser":"deepseek_v4","reasoning_start_str":"","reasoning_end_str":""}
+
+## quantization (from served config)
+attention/dense: FP8 e4m3 block[128,128], scales ue8m0
+routed experts : MXFP4  (config expert_dtype=fp4 -> Mxfp4MoEMethod)
+
+## grid provenance
+ISL points anchored to UW-SyFI/TraceLab v0.0.2 rounds table:
+  input_tokens_total  p50=132092 p90=338662 p99=856464
+  output_tokens       p50=249    p90=1332
+  prefix_tokens/input = 95.6% (mean), 98.8% of rounds have prefix>0
+
+## How these points were produced (IMPORTANT)
+These results came from DIRECT `vllm bench serve` invocations, not `bench.sh`, so the
+labels are `batch_c<N>` / `ctx_<ISL>` rather than bench.sh's `batch_isl16k_c<N>` style.
+
+Batch points: ISL 16384, OSL 256, --ignore-eos, UNIQUE SEED PER POINT (70000 + 137*conc)
+  --num-prompts max(8, 2*conc), --max-concurrency <conc>
+Context points: ISL {16384,65536,131072}, OSL 256, conc 8, --num-prompts 16,
+  seed 81000 + ISL/1024
+
+Every point was verified newcachehits == 0 against vllm:prefix_cache_hits_total.
+
+WARNING: re-running bench.sh into this directory will NOT skip these points (different
+label scheme) and its default seed=0 WILL produce cache-contaminated results -- an
+accidental rerun on 2026-09-01T17:15 gave c=4 = 443 tok/s vs the true 222. Those files
+were deleted. Use unique seeds; see report.md section 2.

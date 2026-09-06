@@ -1,0 +1,44 @@
+timestamp: 2026-09-02T08:15:51+00:00
+host: tan-8gpus-qwen38-0-0
+model: Qwen/Qwen3.8-Flash-Next-FP8
+base: http://localhost:8001
+
+## GPUs
+index, name, memory.total [MiB]
+0, NVIDIA H100 80GB HBM3, 81559 MiB
+1, NVIDIA H100 80GB HBM3, 81559 MiB
+2, NVIDIA H100 80GB HBM3, 81559 MiB
+3, NVIDIA H100 80GB HBM3, 81559 MiB
+4, NVIDIA H100 80GB HBM3, 81559 MiB
+5, NVIDIA H100 80GB HBM3, 81559 MiB
+6, NVIDIA H100 80GB HBM3, 81559 MiB
+7, NVIDIA H100 80GB HBM3, 81559 MiB
+
+## driver / versions
+575.57.08
+torch 2.13.0+cu130
+vllm 0.1.dev20073+g8e685d198
+
+## server command line
+/usr/bin/python3 /usr/local/bin/vllm serve Qwen/Qwen3.8-Flash-Next-FP8 --port 8001 --tensor-parallel-size 8 --enable-expert-parallel --moe-backend triton --gpu-memory-utilization 0.85 --max-num-seqs 256 --max-model-len 262144 --enable-prefix-caching --limit-mm-per-prompt {"image":0,"video":0} --reasoning-parser qwen3 --tool-call-parser qwen3_xml --enable-auto-tool-choice --no-enable-flashinfer-autotune --enable-mfu-metrics --speculative-config {"method":"mtp","num_speculative_tokens":1}
+
+## quantization (from served config)
+QUANT=fp8-attn-dense+fp8-experts  KV_DTYPE=bfloat16   (override these per model -- see header)
+resolved from the LIVE server below, not hardcoded:
+  vllm:cache_config_info{_block_size_resolved="True"
+  block_size="8"
+  cache_dtype="auto"
+  gpu_memory_utilization="0.85"
+  kv_cache_dtype_skip_layers="[]"
+  mamba_block_size="16"
+  mamba_cache_dtype="auto"
+  mamba_ssm_cache_dtype="auto"
+  num_gpu_blocks="4603"
+  user_specified_block_size="False"
+  user_specified_mamba_block_size="False"} 1.0
+
+## grid provenance
+ISL points anchored to UW-SyFI/TraceLab v0.0.2 rounds table:
+  input_tokens_total  p50=132092 p90=338662 p99=856464
+  output_tokens       p50=249    p90=1332
+  prefix_tokens/input = 95.6% (mean), 98.8% of rounds have prefix>0

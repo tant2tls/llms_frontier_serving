@@ -1,0 +1,48 @@
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7f3777388e00>, trust_remote_code=False, seed=131288, num_prompts=16, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, skip_chat_template=False, enable_multimodal_chat=False, disable_shuffle=False, custom_output_len=256, custom_ensure_client_side_data=False, spec_bench_output_len=256, spec_bench_category=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, timed_trace_chunk_hash_size=16, timed_trace_sec_multiplier=1, timed_trace_label_timestamp='timestamp', timed_trace_label_input_length='input_length', timed_trace_label_output_length='output_length', timed_trace_label_hash_ids='hash_ids', blazedit_min_distance=0.0, blazedit_max_distance=1.0, asr_max_audio_len_sec=inf, asr_min_audio_len_sec=0.0, random_input_len=260000, random_output_len=256, random_range_ratio='0.0', random_prefix_len=0, random_batch_size=1, no_reranker=False, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 1}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, bfcl_categories=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, speed_bench_dataset_subset='qualitative', speed_bench_output_len=4096, speed_bench_category=None, label=None, backend='openai-chat', base_url=None, host='localhost', port=8001, endpoint='/v1/chat/completions', header=None, max_concurrency=8, model='zai-org/GLM-5.3-Flash', input_len=None, output_len=None, tokenizer=None, tokenizer_mode='auto', use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, probe_request_rate=0.0, disable_tqdm=False, num_warmups=0, profile=False, save_result=True, save_detailed=False, append_result=False, metadata=['hw=8xH100-80GB-HBM3', 'quant=fp8-attn-dense+fp8-experts', 'kv_cache_dtype=bfloat16', 'tp=8', 'ep=on', 'isl=260000', 'osl=256', 'conc=8', 'seed=131288'], result_dir=None, result_filename='GLM-5.3-Flash/results/bf16kv-mtp-n1-context/ctx_isl260000_c8.json', ignore_eos=True, self_timed=None, percentile_metrics='ttft,tpot,itl,e2el', metric_percentiles='99', goodput=None, request_id_prefix='bench-386f78ff-', top_p=None, top_k=None, min_p=None, temperature=None, frequency_penalty=None, presence_penalty=None, repetition_penalty=None, served_model_name=None, lora_modules=None, lora_assignment='random', ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=0, chat_template_kwargs=None, extra_body=None, skip_tokenizer_init=False, insecure=False, plot_timeline=False, timeline_itl_thresholds='25,50', plot_dataset_stats=False)
+INFO 09-02 11:24:19 [utils.py:90] Sampling input_len from [260000, 260000] and output_len from [256, 256]
+WARNING: vllm bench serve no longer sets temperature==0 (greedy) in requests by default. The default will be determined on the server side and can be model/API specific. For the old behavior, include --temperature=0.
+Starting initial single prompt test run...
+Skipping endpoint ready check.
+Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 8
+  0%|          | 0/16 [00:00<?, ?it/s]  6%|▋         | 1/16 [01:13<18:26, 73.77s/it] 12%|█▎        | 2/16 [01:23<08:21, 35.85s/it] 19%|█▉        | 3/16 [01:31<05:02, 23.26s/it] 25%|██▌       | 4/16 [01:39<03:25, 17.14s/it] 31%|███▏      | 5/16 [01:51<02:49, 15.40s/it] 38%|███▊      | 6/16 [02:02<02:20, 14.07s/it] 44%|████▍     | 7/16 [02:12<01:52, 12.45s/it] 50%|█████     | 8/16 [02:22<01:33, 11.74s/it] 56%|█████▋    | 9/16 [02:33<01:20, 11.46s/it] 62%|██████▎   | 10/16 [02:42<01:05, 10.89s/it] 69%|██████▉   | 11/16 [02:45<00:41,  8.28s/it] 75%|███████▌  | 12/16 [03:03<00:45, 11.25s/it] 88%|████████▊ | 14/16 [03:04<00:12,  6.23s/it] 94%|█████████▍| 15/16 [03:04<00:04,  4.74s/it]100%|██████████| 16/16 [03:04<00:00,  3.55s/it]100%|██████████| 16/16 [03:04<00:00, 11.53s/it]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     16        
+Failed requests:                         0         
+Maximum request concurrency:             8         
+Benchmark duration (s):                  184.49    
+Total input tokens:                      4160192   
+Total generated tokens:                  4096      
+Request throughput (req/s):              0.09      
+Output token throughput (tok/s):         22.20     
+Peak output token throughput (tok/s):    220.00    
+Peak concurrent requests:                9.00      
+Total token throughput (tok/s):          22572.16  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          49404.84  
+Median TTFT (ms):                        41066.72  
+P99 TTFT (ms):                           102368.56 
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          149.37    
+Median TPOT (ms):                        151.34    
+P99 TPOT (ms):                           244.89    
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           297.57    
+Median ITL (ms):                         280.33    
+P99 ITL (ms):                            542.18    
+----------------End-to-end Latency----------------
+Mean E2EL (ms):                          87493.73  
+Median E2EL (ms):                        81363.05  
+P99 E2EL (ms):                           140705.56 
+---------------Speculative Decoding---------------
+Acceptance rate (%):                     72.82     
+Acceptance length:                       1.73      
+Drafts:                                  2366      
+Draft tokens:                            2366      
+Accepted tokens:                         1723      
+Per-position acceptance (%):
+  Position 0:                            72.82     
+==================================================

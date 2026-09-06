@@ -1,0 +1,119 @@
+[1mvLLM sweep[0m  http://localhost:8002  model=deepseek-ai/DeepSeek-V4-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8002
+  [32mok[0m   serving: deepseek-ai/DeepSeek-V4-Flash
+  [32mok[0m   output dir: deepseek_v4_flash/results/mtp-off-image
+  [32mok[0m   wrote deepseek_v4_flash/results/mtp-off-image/manifest.txt
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+
+  [1mbatch_isl16k_c1[0m  ISL=16384 OSL=256 conc=1 prompts=8 seed=32239
+    output tok/s   : 85.034010
+    total  tok/s   : 5554.7802
+    req/s          : 0.332164
+    TTFT p50/p99 ms: 717 / 2727
+    TPOT p50/p99 ms: 8 / 8
+    peak KV usage  : 0.166
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c4[0m  ISL=16384 OSL=256 conc=4 prompts=8 seed=55996
+    output tok/s   : 98.741833
+    total  tok/s   : 6450.2331
+    req/s          : 0.385710
+    TTFT p50/p99 ms: 1903 / 13253
+    TPOT p50/p99 ms: 13 / 59
+    peak KV usage  : 0.172
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c16[0m  ISL=16384 OSL=256 conc=16 prompts=32 seed=151024
+    output tok/s   : 132.22950
+    total  tok/s   : 8637.7890
+    req/s          : 0.516521
+    TTFT p50/p99 ms: 3641 / 28205
+    TPOT p50/p99 ms: 98 / 134
+    peak KV usage  : 0.199
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c64[0m  ISL=16384 OSL=256 conc=64 prompts=128 seed=531136
+    output tok/s   : 290.32066
+    total  tok/s   : 18964.970
+    req/s          : 1.134065
+    TTFT p50/p99 ms: 3644 / 38974
+    TPOT p50/p99 ms: 178 / 246
+    peak KV usage  : 0.305
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+[1m== context sweep (Q1/Q2) -- concurrency 8, OSL 256[0m
+
+  [1mctx_isl16384_c8[0m  ISL=16384 OSL=256 conc=8 prompts=16 seed=87672
+    output tok/s   : 104.50841
+    total  tok/s   : 6826.9304
+    req/s          : 0.408235
+    TTFT p50/p99 ms: 3119 / 25918
+    TPOT p50/p99 ms: 23 / 120
+    peak KV usage  : 0.181
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mctx_isl65536_c8[0m  ISL=65536 OSL=256 conc=8 prompts=16 seed=136824
+    output tok/s   : 47.853379
+    total  tok/s   : 12313.833
+    req/s          : 0.186927
+    TTFT p50/p99 ms: 12311 / 43826
+    TPOT p50/p99 ms: 125 / 175
+    peak KV usage  : 0.219
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mctx_isl131072_c8[0m  ISL=131072 OSL=256 conc=8 prompts=16 seed=102360
+    output tok/s   : 34.665725
+    total  tok/s   : 17794.756
+    req/s          : 0.135412
+    TTFT p50/p99 ms: 26665 / 63785
+    TPOT p50/p99 ms: 144 / 240
+    peak KV usage  : 0.270
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mctx_isl260000_c8[0m  ISL=260000 OSL=256 conc=8 prompts=16 seed=131288
+    output tok/s   : 16.719240
+    total  tok/s   : 17002.618
+    req/s          : 0.065309
+    TTFT p50/p99 ms: 61822 / 127166
+    TPOT p50/p99 ms: 242 / 454
+    peak KV usage  : 0.369
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+[1m== prefix-cache sweep (Q2) -- shared prefix 64K + 2K unique suffix[0m
+
+  [1mprefix_p64k_n1[0m  num_prefixes=1 (prompts/prefix = 64/1)
+    output tok/s: 198.23175   TTFT p50 ms: 1079
+
+  [1mprefix_p64k_n4[0m  num_prefixes=4 (prompts/prefix = 64/4)
+    output tok/s: 391.64756   TTFT p50 ms: 1124
+
+  [1mprefix_p64k_n16[0m  num_prefixes=16 (prompts/prefix = 64/16)
+    output tok/s: 114.60843   TTFT p50 ms: 8638
+  [33mnote[0m fewer prefixes = more sharing = more cache hits. TTFT should fall as n drops.
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1            85.0     5554.8       717       7.9    0.166
+    batch_isl16k_c16          132.2     8637.8      3641      97.7    0.199
+    batch_isl16k_c4            98.7     6450.2      1903      13.0    0.172
+    batch_isl16k_c64          290.3    18965.0      3644     178.0    0.305
+    ctx_isl131072_c8           34.7    17794.8     26665     144.2    0.270
+    ctx_isl16384_c8           104.5     6826.9      3119      23.3    0.181
+    ctx_isl260000_c8           16.7    17002.6     61822     242.3    0.369
+    ctx_isl65536_c8            47.9    12313.8     12311     125.2    0.219
+    prefix_p64k_n1            198.2    52595.7      1079      12.3    0.000
+    prefix_p64k_n16           114.6    30408.4      8638      29.9    0.000
+    prefix_p64k_n4            391.6   103913.6      1124      11.6    0.000
+
+  results: deepseek_v4_flash/results/mtp-off-image
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

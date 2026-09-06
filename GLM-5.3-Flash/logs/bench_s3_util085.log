@@ -1,0 +1,73 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/util085
+  [32mok[0m   wrote GLM-5.3-Flash/results/util085/manifest.txt
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+
+  [1mbatch_isl16k_c1[0m  ISL=16384 OSL=256 conc=1 prompts=8 seed=32239
+    output tok/s   : 91.516524
+    total  tok/s   : 5952.8639
+    req/s          : 0.357486
+    TTFT p50/p99 ms: 861 / 1913
+    TPOT p50/p99 ms: 7 / 7
+    peak KV usage  : 0.013
+    achieved       : 30.5738 TFLOP/s/GPU (1.54% of FP8 peak)
+                     329.855 GB/s/GPU (9.85% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c4[0m  ISL=16384 OSL=256 conc=4 prompts=8 seed=55996
+  [33mnote[0m     QUEUEING SUSPECT: p99/median TTFT = 7.47x at conc=4 (limit 4x).
+  [33mnote[0m     Throughput is probably UNDERSTATED -- rerun before citing. See
+  [33mnote[0m     deepseek_v4_flash/results/_v4image_firstrun_queued/README.md
+    output tok/s   : 98.819990
+    total  tok/s   : 6427.9315
+    req/s          : 0.386015
+    TTFT p50/p99 ms: 1777 / 13268
+    TPOT p50/p99 ms: 13 / 59
+    peak KV usage  : 0.046
+    achieved       : 33.0138 TFLOP/s/GPU (1.67% of FP8 peak)
+                     207.729 GB/s/GPU (6.2% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c16[0m  ISL=16384 OSL=256 conc=16 prompts=32 seed=151024
+    output tok/s   : 357.61298
+    total  tok/s   : 23261.607
+    req/s          : 1.396925
+    TTFT p50/p99 ms: 2210 / 8372
+    TPOT p50/p99 ms: 36 / 40
+    peak KV usage  : 0.181
+    achieved       : 119.4713 TFLOP/s/GPU (6.04% of FP8 peak)
+                     593.523 GB/s/GPU (17.72% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c64[0m  ISL=16384 OSL=256 conc=64 prompts=128 seed=531136
+    output tok/s   : 445.55319
+    total  tok/s   : 28981.843
+    req/s          : 1.740442
+    TTFT p50/p99 ms: 2014 / 32837
+    TPOT p50/p99 ms: 132 / 135
+    peak KV usage  : 0.728
+    achieved       : 148.8504 TFLOP/s/GPU (7.52% of FP8 peak)
+                     447.717 GB/s/GPU (13.36% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1            91.5     5952.9       861       7.0    0.013
+    batch_isl16k_c16          357.6    23261.6      2210      35.6    0.181
+    batch_isl16k_c4            98.8     6427.9      1777      12.9    0.046
+    batch_isl16k_c64          445.6    28981.8      2014     132.0    0.728
+
+  results: GLM-5.3-Flash/results/util085
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

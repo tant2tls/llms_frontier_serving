@@ -1,0 +1,85 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/bf16kv
+  [32mok[0m   wrote GLM-5.3-Flash/results/bf16kv/manifest.txt
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+  [33mnote[0m skip batch_isl16k_c1 (result exists)
+
+  [1mbatch_isl16k_c2[0m  ISL=16384 OSL=256 conc=2 prompts=8 seed=40158
+    output tok/s   : 122.19095
+    total  tok/s   : 7948.1399
+    req/s          : 0.477308
+    TTFT p50/p99 ms: 1341 / 4615
+    TPOT p50/p99 ms: 9 / 10
+    peak KV usage  : 0.025
+    achieved       : 40.8215 TFLOP/s/GPU (2.06% of FP8 peak)
+                     318.614 GB/s/GPU (9.51% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip batch_isl16k_c4 (result exists)
+
+  [1mbatch_isl16k_c8[0m  ISL=16384 OSL=256 conc=8 prompts=16 seed=87672
+    output tok/s   : 296.89608
+    total  tok/s   : 19312.162
+    req/s          : 1.159750
+    TTFT p50/p99 ms: 2191 / 4273
+    TPOT p50/p99 ms: 18 / 23
+    peak KV usage  : 0.101
+    achieved       : 99.187 TFLOP/s/GPU (5.01% of FP8 peak)
+                     542.514 GB/s/GPU (16.19% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip batch_isl16k_c16 (result exists)
+
+  [1mbatch_isl16k_c32[0m  ISL=16384 OSL=256 conc=32 prompts=64 seed=277728
+    output tok/s   : 406.44534
+    total  tok/s   : 26437.999
+    req/s          : 1.587677
+    TTFT p50/p99 ms: 2240 / 16375
+    TPOT p50/p99 ms: 69 / 73
+    peak KV usage  : 0.404
+    achieved       : 135.7852 TFLOP/s/GPU (6.86% of FP8 peak)
+                     607.953 GB/s/GPU (18.15% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c48[0m  ISL=16384 OSL=256 conc=48 prompts=96 seed=404432
+    output tok/s   : 432.63384
+    total  tok/s   : 28141.479
+    req/s          : 1.689975
+    TTFT p50/p99 ms: 1992 / 24406
+    TPOT p50/p99 ms: 101 / 104
+    peak KV usage  : 0.607
+    achieved       : 144.5343 TFLOP/s/GPU (7.3% of FP8 peak)
+                     519.429 GB/s/GPU (15.51% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip batch_isl16k_c64 (result exists)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1            96.3     6264.6       857       7.1    0.014
+    batch_isl16k_c16          359.2    23363.0      2685      33.6    0.201
+    batch_isl16k_c2           122.2     7948.1      1341       8.5    0.025
+    batch_isl16k_c32          406.4    26438.0      2240      68.6    0.404
+    batch_isl16k_c4           225.3    14654.9      1742      10.9    0.051
+    batch_isl16k_c48          432.6    28141.5      1992     100.5    0.607
+    batch_isl16k_c64          447.1    29080.3      2513     129.5    0.809
+    batch_isl16k_c8           296.9    19312.2      2191      18.1    0.101
+    ctx_isl131072_c8           47.2    24238.0     12891     116.7    0.725
+    ctx_isl16384_c8           295.9    19247.4      2629      16.7    0.102
+    ctx_isl260000_c8           26.5    26912.7     38476     147.6    0.895
+    ctx_isl65536_c8           104.3    26802.4      7212      48.0    0.366
+    prefix_p64k_n1            265.3    70312.4      1664      12.6    0.000
+    prefix_p64k_n16           199.4    52861.0      1342      20.8    0.000
+    prefix_p64k_n4            365.9    96974.0      1497      12.9    0.000
+
+  results: GLM-5.3-Flash/results/bf16kv
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

@@ -1,0 +1,1121 @@
+
+[1m== preflight: GPUs[0m
+  visible GPUs: 8 (need 8)
+  [32mok[0m   all 8 GPUs free
+  budget: 305.8 GiB weights / TP8 = 38.2 GiB/GPU; util 0.82 of 79.6 GiB
+          = 65.3 GiB/GPU usable -> ~27.1 GiB/GPU for KV + activations
+
+[1m== preflight: JIT cache dirs (NFS $HOME is quota-full)[0m
+  [32mok[0m   /tmp/triton_cache_4757014_13
+  [32mok[0m   /tmp/torchinductor_cache_4757014_13
+  [32mok[0m   /tmp/vllm_cache_4757014_13
+  [32mok[0m   /tmp/tilelang_cache_4757014_13
+  [32mok[0m   /tmp/xdg_cache_4757014_13
+
+  [33mnote[0m EAGER=1 -- cudagraphs DISABLED. Not comparable to the
+        cudagraph-enabled V4-Flash baseline. Label results accordingly.
+
+[1m== launching: bf16kv-eager[0m
+  engine : /usr/local/bin/vllm
+  model  : zai-org/GLM-5.3-Flash
+  port   : 8001
+  log    : /usr2/tanngo/vol22/LLMs_serving_report/GLM-5.3-Flash/logs/serve_bf16kv-eager_20260902-012754.log
+
+  /usr/local/bin/vllm serve zai-org/GLM-5.3-Flash \
+    --port
+    8001
+    --max-cudagraph-capture-size
+    256
+    --block-size
+    128
+    --max-num-seqs
+    256
+    --tensor-parallel-size
+    8
+    --enable-expert-parallel
+    --gpu-memory-utilization
+    0.82
+    --max-model-len
+    262144
+    --limit-mm-per-prompt
+    {"image":0,"video":0}
+    --reasoning-parser
+    glm45
+    --tool-call-parser
+    glm47
+    --enable-auto-tool-choice
+    --no-enable-flashinfer-autotune
+    --enable-mfu-metrics
+    --enforce-eager
+
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345] 
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345]        █     █     █▄   ▄█
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.1.dev20051+g487ecf187
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345]   █▄█▀ █     █     █     █  model   zai-org/GLM-5.3-Flash
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:345] 
+(APIServer pid=31560) INFO 09-02 01:28:14 [api_utils.py:273] non-default args: {'model_tag': 'zai-org/GLM-5.3-Flash', 'enable_auto_tool_choice': True, 'tool_call_parser': 'glm47', 'port': 8001, 'model': 'zai-org/GLM-5.3-Flash', 'max_model_len': 262144, 'enforce_eager': True, 'reasoning_parser': 'glm45', 'tensor_parallel_size': 8, 'enable_expert_parallel': True, 'block_size': 128, 'gpu_memory_utilization': 0.82, 'limit_mm_per_prompt': {'image': 0, 'video': 0}, 'enable_mfu_metrics': True, 'max_num_seqs': 256, 'max_cudagraph_capture_size': 256, 'enable_flashinfer_autotune': False}
+(APIServer pid=31560) INFO 09-02 01:28:14 [model.py:679] Resolved architecture: Glm5NextForConditionalGeneration
+(APIServer pid=31560) INFO 09-02 01:28:14 [model.py:1972] Using max model len 262144
+(APIServer pid=31560) INFO 09-02 01:28:24 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(APIServer pid=31560) INFO 09-02 01:28:24 [model.py:882] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(APIServer pid=31560) INFO 09-02 01:28:24 [scheduler.py:242] Chunked prefill is enabled with max_num_batched_tokens=8192.
+(APIServer pid=31560) INFO 09-02 01:28:24 [config.py:605] Mamba cache mode is set to 'align' for Glm5NextForConditionalGeneration by default when prefix caching is enabled
+(APIServer pid=31560) WARNING 09-02 01:28:24 [vllm.py:1267] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+(APIServer pid=31560) INFO 09-02 01:28:24 [vllm.py:1319] Auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH=1. Set VLLM_USE_BREAKABLE_CUDAGRAPH=0 to opt out.
+(APIServer pid=31560) INFO 09-02 01:28:24 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(APIServer pid=31560) INFO 09-02 01:28:24 [vllm.py:1518] Cudagraph is disabled under eager mode
+(APIServer pid=31560) INFO 09-02 01:28:24 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant, allreduce_rms
+(APIServer pid=31560) [transformers] The following generation flags are not valid and may be ignored: ['top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+(EngineCore pid=32155) INFO 09-02 01:28:49 [core.py:122] Initializing a V1 LLM engine (v0.1.dev20051+g487ecf187) with config: model='zai-org/GLM-5.3-Flash', speculative_config=None, tokenizer='zai-org/GLM-5.3-Flash', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=auto, tensor_parallel_size=8, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=fp8, quantization_config=None, enforce_eager=True, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='glm45', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=True, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=zai-org/GLM-5.3-Flash, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['+quant_fp8', 'all', '+quant_fp8'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [64, 8192], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': True, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, enable_bf16x3_router_gemm=False, moe_backend='auto', linear_backend='auto')
+(EngineCore pid=32155) INFO 09-02 01:28:49 [multiproc_executor.py:149] DP group leader: node_rank=0, node_rank_within_dp=0, master_addr=127.0.0.1, mq_connect_ip=172.19.89.165 (local), world_size=8, local_world_size=8
+INFO 09-02 01:29:17 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=32407) INFO 09-02 01:29:17 [parallel_state.py:1638] world_size=8 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:29:34 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=32606) INFO 09-02 01:29:35 [parallel_state.py:1638] world_size=8 rank=1 local_rank=1 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:29:52 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=32753) INFO 09-02 01:29:52 [parallel_state.py:1638] world_size=8 rank=2 local_rank=2 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:30:09 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=32904) INFO 09-02 01:30:10 [parallel_state.py:1638] world_size=8 rank=3 local_rank=3 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:30:27 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=33061) INFO 09-02 01:30:27 [parallel_state.py:1638] world_size=8 rank=4 local_rank=4 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:30:44 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=33209) INFO 09-02 01:30:45 [parallel_state.py:1638] world_size=8 rank=5 local_rank=5 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:31:02 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=33357) INFO 09-02 01:31:02 [parallel_state.py:1638] world_size=8 rank=6 local_rank=6 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+INFO 09-02 01:31:20 [registry.py:141] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(Worker pid=33516) INFO 09-02 01:31:20 [parallel_state.py:1638] world_size=8 rank=7 local_rank=7 distributed_init_method=file:///tmp/vllm_dist_da89cfefbb5a42a7a0d4abcc84f70f0a backend=nccl
+(Worker pid=32407) INFO 09-02 01:31:20 [pynccl.py:113] vLLM is using nccl==2.30.7
+(Worker pid=32407) INFO 09-02 01:31:23 [cuda_communicator.py:266] Using ['CUSTOM', 'SYMM_MEM', 'PYNCCL'] all-reduce backends (in dispatch order) for group 'tp:0' out of potential backends: ['NCCL_SYMM_MEM', 'QUICK_REDUCE', 'FLASHINFER', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=32407) INFO 09-02 01:31:24 [cuda_communicator.py:266] Using ['PYNCCL'] all-reduce backends (in dispatch order) for group 'ep:0' out of potential backends: ['NCCL_SYMM_MEM', 'QUICK_REDUCE', 'FLASHINFER', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=32407) INFO 09-02 01:31:24 [parallel_state.py:1982] rank 0 in world size 8 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank 0, EPLB rank N/A
+(Worker pid=32407) INFO 09-02 01:31:24 [gpu_worker.py:386] Using V2 Model Runner
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [model_runner.py:353] Loading model from scratch...
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [cuda.py:591] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [mm_encoder_attention.py:375] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(Worker_TP0_EP0 pid=32407) WARNING 09-02 01:31:25 [vllm.py:1267] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [kernel.py:306] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [vllm.py:1518] Cudagraph is disabled under eager mode
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant, allreduce_rms
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [__init__.py:662] Selected FlashInferFp8DeepGEMMDynamicBlockScaledKernel for Fp8LinearMethod
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [deep_gemm.py:191] deep_gemm not found in site-packages, trying vendored vllm.third_party.deep_gemm
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [deep_gemm.py:218] DeepGEMM PDL enabled on vllm.third_party.deep_gemm.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:25 [deep_gemm.py:136] DeepGEMM E8M0 enabled on current platform.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:26 [cuda.py:532] Using FLASH_ATTN_MLA_SPARSE attention backend out of potential backends: ['FLASH_ATTN_MLA_SPARSE', 'FLASHMLA_SPARSE'].
+(Worker_TP0_EP0 pid=32407) WARNING 09-02 01:31:26 [mla_attention.py:567] No MLA prefill backend supports this model; sparse MLA will use the top-k MQA path only (no dense-MHA prefill).
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:26 [expert_map_manager.py:245] [EP Rank 0/8] Expert parallelism is enabled. Expert placement strategy: linear. Local/global number of experts: 36/288. Experts local to global index map: 0->0, 1->1, 2->2, 3->3, 4->4, 5->5, 6->6, 7->7, 8->8, 9->9, 10->10, 11->11, 12->12, 13->13, 14->14, 15->15, 16->16, 17->17, 18->18, 19->19, 20->20, 21->21, 22->22, 23->23, 24->24, 25->25, 26->26, 27->27, 28->28, 29->29, 30->30, 31->31, 32->32, 33->33, 34->34, 35->35.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:26 [fp8.py:411] Using FLASHINFER_CUTLASS Fp8 MoE backend out of potential backends: ['FLASHINFER_CUTLASS', 'AITER', 'FLASHINFER_TRTLLM', 'DEEPGEMM', 'TRITON', 'MARLIN', 'HUMMING', 'BATCHED_DEEPGEMM', 'BATCHED_TRITON', 'XPU', 'CPU', 'HPC'].
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:26 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:26 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:26 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:26 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:27 [weight_utils.py:858] Filesystem type for checkpoints: NFS. Checkpoint size: 305.79 GiB. Available RAM: 1414.08 GiB.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:27 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   0% Completed | 0/62 [00:00<?, ?it/s]
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:27 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:27 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   2% Completed | 1/62 [00:00<00:07,  8.03it/s]
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:27 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:27 [weight_utils.py:820] Prefetching checkpoint files into page cache started (in background, num_threads=8, block_size=16777216 bytes)
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   3% Completed | 2/62 [00:00<00:08,  7.21it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   5% Completed | 3/62 [00:00<00:16,  3.68it/s]
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   6% Completed | 4/62 [00:01<00:21,  2.72it/s]
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/7)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:28 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/7)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.38s
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.35s
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:   8% Completed | 5/62 [00:02<00:33,  1.69it/s]
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/7)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 10% (1/8)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/7)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.48s
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/7)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/7)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/7)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/7)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 20% (2/8)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 30% (3/8)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/7)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 40% (4/8)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/7)
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.39s
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/7)
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.53s
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 50% (5/7)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/8)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 60% (6/7)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 70% (7/7)
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.39s
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.56s
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  10% Completed | 6/62 [00:02<00:28,  1.95it/s]
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:792] Prefetching checkpoint files: 80% (8/8)
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:29 [weight_utils.py:815] Prefetching checkpoint files into page cache finished in 2.43s
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  11% Completed | 7/62 [00:02<00:23,  2.32it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  13% Completed | 8/62 [00:03<00:20,  2.64it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  15% Completed | 9/62 [00:03<00:18,  2.85it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  16% Completed | 10/62 [00:03<00:16,  3.08it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  18% Completed | 11/62 [00:04<00:21,  2.38it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  19% Completed | 12/62 [00:04<00:18,  2.64it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  21% Completed | 13/62 [00:04<00:17,  2.83it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  23% Completed | 14/62 [00:05<00:15,  3.08it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  24% Completed | 15/62 [00:05<00:14,  3.19it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  26% Completed | 16/62 [00:05<00:14,  3.22it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  27% Completed | 17/62 [00:06<00:17,  2.51it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  29% Completed | 18/62 [00:06<00:15,  2.78it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  31% Completed | 19/62 [00:06<00:14,  2.96it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  32% Completed | 20/62 [00:07<00:13,  3.07it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  34% Completed | 21/62 [00:07<00:12,  3.31it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  35% Completed | 22/62 [00:08<00:15,  2.59it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  37% Completed | 23/62 [00:08<00:13,  2.79it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  39% Completed | 24/62 [00:08<00:12,  3.02it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  40% Completed | 25/62 [00:08<00:11,  3.20it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  42% Completed | 26/62 [00:09<00:10,  3.28it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  44% Completed | 27/62 [00:09<00:10,  3.28it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  45% Completed | 28/62 [00:10<00:13,  2.56it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  47% Completed | 29/62 [00:10<00:12,  2.71it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  48% Completed | 30/62 [00:10<00:11,  2.82it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  50% Completed | 31/62 [00:10<00:10,  2.92it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  52% Completed | 32/62 [00:11<00:12,  2.36it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  53% Completed | 33/62 [00:11<00:11,  2.50it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  55% Completed | 34/62 [00:12<00:10,  2.63it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  56% Completed | 35/62 [00:12<00:12,  2.25it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  58% Completed | 36/62 [00:13<00:10,  2.47it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  60% Completed | 37/62 [00:13<00:09,  2.62it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  61% Completed | 38/62 [00:13<00:08,  2.82it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  63% Completed | 39/62 [00:14<00:08,  2.87it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  65% Completed | 40/62 [00:14<00:09,  2.31it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  66% Completed | 41/62 [00:15<00:08,  2.50it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  68% Completed | 42/62 [00:15<00:07,  2.76it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  69% Completed | 43/62 [00:15<00:06,  2.83it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  71% Completed | 44/62 [00:16<00:06,  2.91it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  73% Completed | 45/62 [00:16<00:05,  3.05it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  74% Completed | 46/62 [00:16<00:06,  2.44it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  76% Completed | 47/62 [00:17<00:05,  2.60it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  77% Completed | 48/62 [00:17<00:05,  2.71it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  79% Completed | 49/62 [00:17<00:04,  2.92it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  81% Completed | 50/62 [00:18<00:04,  2.92it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  82% Completed | 51/62 [00:18<00:03,  2.97it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  84% Completed | 52/62 [00:18<00:03,  3.09it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  85% Completed | 53/62 [00:19<00:03,  2.50it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  87% Completed | 54/62 [00:19<00:03,  2.64it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  89% Completed | 55/62 [00:20<00:02,  2.79it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  90% Completed | 56/62 [00:20<00:02,  2.97it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  92% Completed | 57/62 [00:20<00:01,  2.99it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  94% Completed | 58/62 [00:20<00:01,  3.01it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  95% Completed | 59/62 [00:21<00:01,  2.50it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  97% Completed | 60/62 [00:21<00:00,  2.71it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards:  98% Completed | 61/62 [00:22<00:00,  2.84it/s]
+(Worker_TP0_EP0 pid=32407) Loading safetensors checkpoint shards: 100% Completed | 62/62 [00:22<00:00,  2.79it/s]
+(Worker_TP0_EP0 pid=32407) 
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:49 [default_loader.py:430] Loading weights took 22.19 seconds
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:51 [model_runner.py:374] Model loading took 38.08 GiB and 26.241766 seconds
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:51 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:31:51 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:51 [model_runner.py:374] Model loading took 38.08 GiB and 26.276427 seconds
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:51 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:31:51 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:51 [model_runner.py:374] Model loading took 38.08 GiB and 26.415492 seconds
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:51 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:31:51 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:51 [fp8.py:713] Using MoEPrepareAndFinalizeNoDPEPModular
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:52 [model_runner.py:374] Model loading took 38.08 GiB and 26.816347 seconds
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:52 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:31:52 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:52 [model_runner.py:374] Model loading took 38.08 GiB and 26.979321 seconds
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:52 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:31:52 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:53 [model_runner.py:374] Model loading took 38.08 GiB and 27.929612 seconds
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:53 [topk_topp_sampler.py:62] Using FlashInfer for top-p & top-k sampling.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:53 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:53 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:53 [model_runner.py:374] Model loading took 38.08 GiB and 28.340003 seconds
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:53 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:31:53 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:54 [model_runner.py:374] Model loading took 38.08 GiB and 29.103991 seconds
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:54 [interface.py:926] Setting attention block size to 640 tokens to ensure that attention page size is >= mamba page size.
+(Worker_TP2_EP2 pid=32753) INFO 09-02 01:31:54 [interface.py:950] Padding mamba page size by 20.75% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=32155) INFO 09-02 01:31:54 [torch_utils.py:262] Reducing Torch threads from 32 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:58 [gpu_worker.py:564] Available KV cache memory: 23.26 GiB
+(EngineCore pid=32155) INFO 09-02 01:31:58 [kv_cache_utils.py:2141] GPU KV cache size: 2,099,654 tokens, Maximum concurrency for 262,144 tokens per request: 8.01x
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:31:58 [indexer.py:729] DSA indexer decode path: use_flattening=False supports_varlen=False (next_n=1, use_fp4_indexer_cache=False)
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:32:01 [kernel_warmup.py:95] Warming up ll_bf16 router GEMM kernels for shapes: ((4096, 288),).
+(Worker_TP0_EP0 pid=32407) DeepGEMM warmup:   0%|          | 0/967 [00:00<?, ?it/s]DeepGEMM warmup:   0%|          | 1/967 [00:02<43:02,  2.67s/it]DeepGEMM warmup:   1%|          | 6/967 [00:04<10:54,  1.47it/s]DeepGEMM warmup:   4%|▎         | 34/967 [00:07<02:28,  6.29it/s]DeepGEMM warmup:   4%|▍         | 37/967 [00:09<03:39,  4.25it/s]DeepGEMM warmup:   4%|▍         | 40/967 [00:12<05:01,  3.08it/s]DeepGEMM warmup:   5%|▍         | 44/967 [00:17<08:28,  1.82it/s]DeepGEMM warmup:   6%|▌         | 55/967 [00:19<06:02,  2.51it/s]DeepGEMM warmup:   6%|▌         | 60/967 [00:24<07:32,  2.01it/s]DeepGEMM warmup:   7%|▋         | 66/967 [00:26<07:04,  2.12it/s]DeepGEMM warmup:   7%|▋         | 70/967 [00:29<07:35,  1.97it/s]DeepGEMM warmup:   8%|▊         | 74/967 [00:35<11:40,  1.27it/s]DeepGEMM warmup:   8%|▊         | 77/967 [00:41<14:43,  1.01it/s]DeepGEMM warmup:   9%|▉         | 90/967 [00:45<08:50,  1.65it/s]DeepGEMM warmup:  24%|██▍       | 234/967 [00:47<00:57, 12.69it/s]DeepGEMM warmup:  25%|██▍       | 239/967 [00:49<01:07, 10.80it/s]DeepGEMM warmup:  29%|██▉       | 279/967 [00:55<01:13,  9.42it/s](EngineCore pid=32155) INFO 09-02 01:32:59 [shm_broadcast.py:801] No available shared memory broadcast block found in 60 seconds. This typically happens when some processes are hanging or doing some time-consuming work (e.g. compilation, weight/kv cache quantization).
+DeepGEMM warmup:  29%|██▉       | 285/967 [00:58<01:31,  7.43it/s]DeepGEMM warmup:  30%|███       | 291/967 [01:00<01:45,  6.42it/s]DeepGEMM warmup:  31%|███       | 300/967 [01:03<02:02,  5.45it/s]DeepGEMM warmup:  32%|███▏      | 307/967 [01:06<02:17,  4.79it/s]DeepGEMM warmup:  32%|███▏      | 312/967 [01:11<03:30,  3.11it/s]DeepGEMM warmup:  33%|███▎      | 318/967 [01:15<04:16,  2.53it/s]DeepGEMM warmup:  34%|███▍      | 329/967 [01:18<03:45,  2.83it/s]DeepGEMM warmup:  54%|█████▍    | 520/967 [01:20<00:21, 20.70it/s]DeepGEMM warmup:  54%|█████▍    | 525/967 [01:22<00:26, 16.85it/s]DeepGEMM warmup:  56%|█████▌    | 539/967 [01:24<00:29, 14.42it/s]DeepGEMM warmup:  56%|█████▋    | 544/967 [01:26<00:37, 11.28it/s]DeepGEMM warmup:  57%|█████▋    | 549/967 [01:29<00:47,  8.77it/s]DeepGEMM warmup:  57%|█████▋    | 552/967 [01:32<01:13,  5.67it/s]DeepGEMM warmup:  58%|█████▊    | 558/967 [01:34<01:22,  4.96it/s]DeepGEMM warmup:  58%|█████▊    | 560/967 [01:37<01:47,  3.79it/s]DeepGEMM warmup:  58%|█████▊    | 563/967 [01:39<02:12,  3.04it/s]DeepGEMM warmup:  59%|█████▉    | 572/967 [01:41<01:58,  3.33it/s]DeepGEMM warmup:  59%|█████▉    | 575/967 [01:43<02:21,  2.76it/s]DeepGEMM warmup:  60%|█████▉    | 576/967 [01:47<03:39,  1.78it/s]DeepGEMM warmup:  61%|██████    | 586/967 [01:49<02:35,  2.45it/s]DeepGEMM warmup:  62%|██████▏   | 595/967 [01:52<02:12,  2.81it/s]DeepGEMM warmup:  63%|██████▎   | 612/967 [01:54<01:26,  4.12it/s](EngineCore pid=32155) INFO 09-02 01:34:00 [shm_broadcast.py:801] No available shared memory broadcast block found in 60 seconds. This typically happens when some processes are hanging or doing some time-consuming work (e.g. compilation, weight/kv cache quantization).
+DeepGEMM warmup:  64%|██████▍   | 620/967 [02:00<02:03,  2.81it/s]DeepGEMM warmup:  66%|██████▌   | 638/967 [02:02<01:24,  3.91it/s]DeepGEMM warmup:  69%|██████▊   | 664/967 [02:04<00:53,  5.65it/s]DeepGEMM warmup:  71%|███████   | 682/967 [02:07<00:47,  6.01it/s]DeepGEMM warmup:  71%|███████   | 687/967 [02:09<00:53,  5.22it/s]DeepGEMM warmup:  71%|███████▏  | 689/967 [02:11<01:06,  4.20it/s]DeepGEMM warmup:  75%|███████▌  | 727/967 [02:13<00:29,  8.12it/s]DeepGEMM warmup:  75%|███████▌  | 729/967 [02:15<00:41,  5.67it/s]DeepGEMM warmup:  76%|███████▌  | 733/967 [02:18<00:51,  4.55it/s]DeepGEMM warmup:  76%|███████▋  | 739/967 [02:20<00:55,  4.13it/s]DeepGEMM warmup:  77%|███████▋  | 748/967 [02:22<00:52,  4.14it/s]DeepGEMM warmup:  78%|███████▊  | 755/967 [02:24<00:53,  3.93it/s]DeepGEMM warmup:  79%|███████▊  | 760/967 [02:26<00:59,  3.50it/s]DeepGEMM warmup:  79%|███████▉  | 766/967 [02:28<01:04,  3.11it/s]DeepGEMM warmup:  80%|████████  | 777/967 [02:31<00:51,  3.70it/s](Worker_TP2_EP2 pid=32753) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.9/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37677283328` (35.09 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP3_EP3 pid=32904) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.9/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37677545472` (35.09 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+DeepGEMM warmup:  86%|████████▋ | 835/967 [02:33<00:13,  9.91it/s]DeepGEMM warmup: 100%|██████████| 967/967 [02:33<00:00,  6.29it/s]
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:34:36 [kernel_warmup.py:170] Skipping FlashInfer autotune because it is disabled.
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.94/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37716867072` (35.13 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP5_EP5 pid=33209) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.94/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37713721344` (35.12 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP1_EP1 pid=32606) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.9/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37673875456` (35.09 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP6_EP6 pid=33357) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.98/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37765167104` (35.17 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP7_EP7 pid=33516) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.93/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37701400576` (35.11 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP4_EP4 pid=33061) INFO 09-02 01:34:36 [gpu_worker.py:790] Free memory on device (76.99/79.18 GiB) on startup. Desired GPU memory utilization is (0.82, 64.93 GiB). Actual usage is 39.64 GiB for consumed memory (weights + non-torch), 2.03 GiB for peak activation, and 0.0 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=24817901159` (23.11 GiB) to fit into requested memory, or `--kv-cache-memory=37770541056` (35.18 GiB) to fully utilize gpu memory. Current kv cache memory in use is 23.26 GiB.
+(Worker_TP6_EP6 pid=33357) 2026-09-02 01:34:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_fused_tilelang` with `out_idx=None`
+(Worker_TP6_EP6 pid=33357) 2026-09-02 01:34:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_fused_tilelang`
+(Worker_TP6_EP6 pid=33357) 2026-09-02 01:34:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP6_EP6 pid=33357) 2026-09-02 01:34:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] WorkerProc hit an exception.
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891424_212979]
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891424_212979]
+(Worker_TP6_EP6 pid=33357) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] 
+(Worker_TP2_EP2 pid=32753) 2026-09-02 01:34:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_fused_tilelang` with `out_idx=None`
+(Worker_TP2_EP2 pid=32753) 2026-09-02 01:34:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_fused_tilelang`
+(Worker_TP2_EP2 pid=32753) 2026-09-02 01:34:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP2_EP2 pid=32753) 2026-09-02 01:34:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] WorkerProc hit an exception.
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891437_68935]
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891437_68935]
+(Worker_TP2_EP2 pid=32753) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] 
+(Worker_TP4_EP4 pid=33061) 2026-09-02 01:34:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_fused_tilelang` with `out_idx=None`
+(Worker_TP4_EP4 pid=33061) 2026-09-02 01:34:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_fused_tilelang`
+(Worker_TP4_EP4 pid=33061) 2026-09-02 01:34:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP4_EP4 pid=33061) 2026-09-02 01:34:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] WorkerProc hit an exception.
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891602_160453]
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] Traceback (most recent call last):
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1025, in worker_busy_loop
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 796, in compile_or_warm_up_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     warmup_kernels(self.model_runner, self.execute_model, self.sample_tokens)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 410, in warmup_kernels
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     _run_decode_step(step_indices, step_spec_flags)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/warmup.py", line 379, in _run_decode_step
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     worker_execute_model(decode_output)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 1086, in execute_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.model_runner.execute_model(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return func(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1760, in execute_model
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     model_output = self.model(**model_inputs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/glm4_1v.py", line 2327, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states = self.language_model.model(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 707, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     hidden_states, residual, post, comb = layer(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                                           ^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 501, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     x = self.mlp(x)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]         ^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/glm5next/nvidia/model.py", line 145, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     gate_up, _ = self.gate_up_proj(x)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                  ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._call_impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return forward_call(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 576, in forward
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 461, in apply
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/BlockScaledMMLinearKernel.py", line 132, in apply_weights
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     output = self.apply_block_scaled_mm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 194, in apply_block_scaled_mm
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.ops.vllm.dynamic_flashinfer_deepgemm_blockscale_gemm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return self._op(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 311, in _dynamic_flashinfer_deepgemm_blockscale_gemm_impl
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return torch.cond(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/cond.py", line 210, in cond
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return true_fn(*operands)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/flashinfer.py", line 270, in run_flashinfer_deepgemm_swapAB
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return flashinfer_fp8_blockscale_gemm(
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/vllm/utils/flashinfer.py", line 107, in wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return impl(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/api_logging.py", line 2333, in _auto_dump_wrapper
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     return _inner(*args, **kwargs)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]            ^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "/usr/local/lib/python3.12/dist-packages/flashinfer/gemm/gemm_base.py", line 8683, in fp8_blockscale_gemm_sm90
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]     runner.run_gemm(input, weight, out, input_scale, weight_scale)
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033]   File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] tvm.error.InternalError: filesystem error: cannot create directories: Disk quota exceeded [/usr2/tanngo/.tensorrt_llm/tmp/gemm_swapAB_3072_4096_128_16_128_1_81_8_1_Normal_1788312891602_160453]
+(Worker_TP4_EP4 pid=33061) ERROR 09-02 01:34:51 [multiproc_executor.py:1033] 
+CUDA error: invalid argument
+CUDA error: invalid argument
+CUDA error: invalid argument
+CUDA error: invalid argument
+CUDA error: invalid argument
+(EngineCore pid=32155) ERROR 09-02 01:34:53 [multiproc_executor.py:310] Worker proc VllmWorker-5 died unexpectedly (exit code: None), shutting down executor.
+(EngineCore pid=32155) INFO 09-02 01:34:53 [multiproc_executor.py:455] [shutdown] Executor: waiting for worker exit count=8
+(Worker_TP0_EP0 pid=32407) 2026-09-02 01:34:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_fused_tilelang` with `out_idx=None`
+(Worker_TP0_EP0 pid=32407) 2026-09-02 01:34:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_fused_tilelang`
+(Worker_TP0_EP0 pid=32407) 2026-09-02 01:34:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP0_EP0 pid=32407) 2026-09-02 01:34:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP0_EP0 pid=32407) INFO 09-02 01:34:53 [multiproc_executor.py:819] Parent process exited, terminating worker queues
+(EngineCore pid=32155) WARNING 09-02 01:34:58 [multiproc_executor.py:467] [shutdown] Executor: workers still running after grace period; sending SIGTERM count=3
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355] EngineCore failed to start.
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355] Traceback (most recent call last):
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1324, in run_engine_core
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return func(*args, **kwargs)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1082, in __init__
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     super().__init__(
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     kv_cache_config = self._initialize_kv_caches(vllm_config)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return func(*args, **kwargs)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 340, in _initialize_kv_caches
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     self.model_executor.compile_or_warm_up_model()
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 124, in compile_or_warm_up_model
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     compilation_times: list[CompilationTimes] = self.collective_rpc(
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                                                 ^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 431, in collective_rpc
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return future if non_block else future.result()
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                                     ^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 98, in result
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return super().result()
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]            ^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return self.__get_result()
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]            ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     raise self._exception
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 102, in _wait_for_response
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     response = self.aggregate(self.get_response())
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                               ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 416, in get_response
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     status, result = mq.dequeue(timeout=dequeue_timeout)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 889, in dequeue
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     with self.acquire_read(timeout, indefinite) as buf:
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/lib/python3.12/contextlib.py", line 137, in __enter__
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     return next(self.gen)
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]            ^^^^^^^^^^^^^^
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]   File "/usr/local/lib/python3.12/dist-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 797, in acquire_read
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355]     raise RuntimeError("cancelled")
+(EngineCore pid=32155) ERROR 09-02 01:34:59 [core.py:1355] RuntimeError: cancelled
+(EngineCore pid=32155) Process EngineCore:
+(EngineCore pid=32155) Traceback (most recent call last):
+(EngineCore pid=32155)   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+(EngineCore pid=32155)     self.run()
+(EngineCore pid=32155)   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+(EngineCore pid=32155)     self._target(*self._args, **self._kwargs)
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1359, in run_engine_core
+(EngineCore pid=32155)     raise e
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1324, in run_engine_core
+(EngineCore pid=32155)     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+(EngineCore pid=32155)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(EngineCore pid=32155)     return func(*args, **kwargs)
+(EngineCore pid=32155)            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1082, in __init__
+(EngineCore pid=32155)     super().__init__(
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__
+(EngineCore pid=32155)     kv_cache_config = self._initialize_kv_caches(vllm_config)
+(EngineCore pid=32155)                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(EngineCore pid=32155)     return func(*args, **kwargs)
+(EngineCore pid=32155)            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 340, in _initialize_kv_caches
+(EngineCore pid=32155)     self.model_executor.compile_or_warm_up_model()
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 124, in compile_or_warm_up_model
+(EngineCore pid=32155)     compilation_times: list[CompilationTimes] = self.collective_rpc(
+(EngineCore pid=32155)                                                 ^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 431, in collective_rpc
+(EngineCore pid=32155)     return future if non_block else future.result()
+(EngineCore pid=32155)                                     ^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 98, in result
+(EngineCore pid=32155)     return super().result()
+(EngineCore pid=32155)            ^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+(EngineCore pid=32155)     return self.__get_result()
+(EngineCore pid=32155)            ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+(EngineCore pid=32155)     raise self._exception
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 102, in _wait_for_response
+(EngineCore pid=32155)     response = self.aggregate(self.get_response())
+(EngineCore pid=32155)                               ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 416, in get_response
+(EngineCore pid=32155)     status, result = mq.dequeue(timeout=dequeue_timeout)
+(EngineCore pid=32155)                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 889, in dequeue
+(EngineCore pid=32155)     with self.acquire_read(timeout, indefinite) as buf:
+(EngineCore pid=32155)   File "/usr/lib/python3.12/contextlib.py", line 137, in __enter__
+(EngineCore pid=32155)     return next(self.gen)
+(EngineCore pid=32155)            ^^^^^^^^^^^^^^
+(EngineCore pid=32155)   File "/usr/local/lib/python3.12/dist-packages/vllm/distributed/device_communicators/shm_broadcast.py", line 797, in acquire_read
+(EngineCore pid=32155)     raise RuntimeError("cancelled")
+(EngineCore pid=32155) RuntimeError: cancelled
+(APIServer pid=31560) INFO 09-02 01:35:01 [utils.py:615] [shutdown] Process manager: send sigterm to process EngineCore
+(APIServer pid=31560) Traceback (most recent call last):
+(APIServer pid=31560)   File "/usr/local/bin/vllm", line 10, in <module>
+(APIServer pid=31560)     sys.exit(main())
+(APIServer pid=31560)              ^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main
+(APIServer pid=31560)     args.dispatch_function(args)
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd
+(APIServer pid=31560)     uvloop.run(run_server(args))
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run
+(APIServer pid=31560)     return __asyncio.run(
+(APIServer pid=31560)            ^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+(APIServer pid=31560)     return runner.run(main)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+(APIServer pid=31560)     return self._loop.run_until_complete(task)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper
+(APIServer pid=31560)     return await main
+(APIServer pid=31560)            ^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 764, in run_server
+(APIServer pid=31560)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 778, in run_server_worker
+(APIServer pid=31560)     async with build_async_engine_client(
+(APIServer pid=31560)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=31560)     return await anext(self.gen)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 132, in build_async_engine_client
+(APIServer pid=31560)     async with build_async_engine_client_from_engine_args(
+(APIServer pid=31560)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=31560)     return await anext(self.gen)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 168, in build_async_engine_client_from_engine_args
+(APIServer pid=31560)     async_llm = AsyncLLM.from_vllm_config(
+(APIServer pid=31560)                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 220, in from_vllm_config
+(APIServer pid=31560)     return cls(
+(APIServer pid=31560)            ^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 149, in __init__
+(APIServer pid=31560)     self.engine_core = EngineCoreClient.make_async_mp_client(
+(APIServer pid=31560)                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=31560)     return func(*args, **kwargs)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 139, in make_async_mp_client
+(APIServer pid=31560)     return AsyncMPClient(*client_args)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=31560)     return func(*args, **kwargs)
+(APIServer pid=31560)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 990, in __init__
+(APIServer pid=31560)     super().__init__(
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 609, in __init__
+(APIServer pid=31560)     with launch_core_engines(
+(APIServer pid=31560)   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+(APIServer pid=31560)     next(self.gen)
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1206, in launch_core_engines
+(APIServer pid=31560)     wait_for_engine_startup(
+(APIServer pid=31560)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1286, in wait_for_engine_startup
+(APIServer pid=31560)     raise RuntimeError(
+(APIServer pid=31560) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 6 leaked shared_memory objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

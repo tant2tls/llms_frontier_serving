@@ -1,0 +1,45 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/bf16kv
+  [32mok[0m   wrote GLM-5.3-Flash/results/bf16kv/manifest.txt
+
+[1m== context sweep (Q1/Q2) -- concurrency 8, OSL 256[0m
+  [33mnote[0m skip ctx_isl16384_c8 (result exists)
+  [33mnote[0m skip ctx_isl65536_c8 (result exists)
+  [33mnote[0m skip ctx_isl131072_c8 (result exists)
+
+  [1mctx_isl260000_c8[0m  ISL=260000 OSL=256 conc=8 prompts=16 seed=131288
+    output tok/s   : 26.471355
+    total  tok/s   : 26912.682
+    req/s          : 0.103403
+    TTFT p50/p99 ms: 38476 / 75055
+    TPOT p50/p99 ms: 148 / 149
+    peak KV usage  : 0.895
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1            96.3     6264.6       857       7.1    0.014
+    batch_isl16k_c16          359.2    23363.0      2685      33.6    0.201
+    batch_isl16k_c4           225.3    14654.9      1742      10.9    0.051
+    batch_isl16k_c64          447.1    29080.3      2513     129.5    0.809
+    ctx_isl131072_c8           47.2    24238.0     12891     116.7    0.725
+    ctx_isl16384_c8           295.9    19247.4      2629      16.7    0.102
+    ctx_isl260000_c8           26.5    26912.7     38476     147.6    0.895
+    ctx_isl65536_c8           104.3    26802.4      7212      48.0    0.366
+    prefix_p64k_n1            265.3    70312.4      1664      12.6    0.000
+    prefix_p64k_n16           199.4    52861.0      1342      20.8    0.000
+    prefix_p64k_n4            365.9    96974.0      1497      12.9    0.000
+
+  results: GLM-5.3-Flash/results/bf16kv
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

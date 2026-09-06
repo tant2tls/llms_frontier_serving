@@ -1,0 +1,43 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/bf16kv-mtp-n1-context
+  [32mok[0m   wrote GLM-5.3-Flash/results/bf16kv-mtp-n1-context/manifest.txt
+  [33mnote[0m spec-decode (MTP) is ACTIVE on this server.
+  [33mnote[0m plan.md scopes base-model throughput without spec decode -- for those
+  [33mnote[0m numbers restart run.sh with --speculative-config removed.
+
+[1m== context sweep (Q1/Q2) -- concurrency 8, OSL 256[0m
+
+  [1mctx_isl16384_c8[0m  ISL=16384 OSL=256 conc=8 prompts=16 seed=87672
+    output tok/s   : 314.80874
+    total  tok/s   : 20477.324
+    req/s          : 1.229721
+    TTFT p50/p99 ms: 2101 / 4495
+    TPOT p50/p99 ms: 17 / 23
+    peak KV usage  : 0.115
+    achieved       : 105.418 TFLOP/s/GPU (5.33% of FP8 peak)
+                     591.394 GB/s/GPU (17.65% of 3.35 TB/s) [E, engine estimate]
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip ctx_isl65536_c8 (result exists)
+  [33mnote[0m skip ctx_isl131072_c8 (result exists)
+  [33mnote[0m skip ctx_isl16384_c8 (result exists)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    ctx_isl131072_c8           45.3    23226.4     10734     122.9    0.789
+    ctx_isl16384_c8           314.8    20477.3      2101      17.2    0.115
+    ctx_isl260000_c8           22.2    22572.2     41067     151.3    0.969
+    ctx_isl65536_c8            97.6    25096.5      5427      57.2    0.406
+
+  results: GLM-5.3-Flash/results/bf16kv-mtp-n1-context
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

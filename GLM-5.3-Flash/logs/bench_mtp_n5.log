@@ -1,0 +1,62 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/bf16kv-mtp-n5
+  [32mok[0m   wrote GLM-5.3-Flash/results/bf16kv-mtp-n5/manifest.txt
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+
+  [1mbatch_isl16k_c1[0m  ISL=16384 OSL=256 conc=1 prompts=8 seed=32239
+    output tok/s   : 120.79351
+    total  tok/s   : 7857.2409
+    req/s          : 0.471849
+    TTFT p50/p99 ms: 734 / 1695
+    TPOT p50/p99 ms: 5 / 6
+    peak KV usage  : 0.019
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c4[0m  ISL=16384 OSL=256 conc=4 prompts=8 seed=55996
+    output tok/s   : 230.71087
+    total  tok/s   : 15007.021
+    req/s          : 0.901214
+    TTFT p50/p99 ms: 1676 / 2725
+    TPOT p50/p99 ms: 12 / 14
+    peak KV usage  : 0.074
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c16[0m  ISL=16384 OSL=256 conc=16 prompts=32 seed=151024
+    output tok/s   : 342.12086
+    total  tok/s   : 22253.893
+    req/s          : 1.336409
+    TTFT p50/p99 ms: 2119 / 8977
+    TPOT p50/p99 ms: 34 / 54
+    peak KV usage  : 0.310
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+  [1mbatch_isl16k_c64[0m  ISL=16384 OSL=256 conc=64 prompts=128 seed=531136
+    output tok/s   : 408.32321
+    total  tok/s   : 26560.149
+    req/s          : 1.595012
+    TTFT p50/p99 ms: 10724 / 38504
+    TPOT p50/p99 ms: 101 / 136
+    peak KV usage  : 0.992
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1           120.8     7857.2       734       4.9    0.019
+    batch_isl16k_c16          342.1    22253.9      2119      33.8    0.310
+    batch_isl16k_c4           230.7    15007.0      1676      11.7    0.074
+    batch_isl16k_c64          408.3    26560.1     10724     101.1    0.992
+
+  results: GLM-5.3-Flash/results/bf16kv-mtp-n5
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

@@ -1,0 +1,41 @@
+[1mvLLM sweep[0m  http://localhost:8001  model=zai-org/GLM-5.3-Flash
+
+[1m== preflight[0m
+  [32mok[0m   server healthy at http://localhost:8001
+  [32mok[0m   serving: zai-org/GLM-5.3-Flash
+  [32mok[0m   output dir: GLM-5.3-Flash/results/bf16kv-mtp-n1
+  [32mok[0m   wrote GLM-5.3-Flash/results/bf16kv-mtp-n1/manifest.txt
+  [33mnote[0m spec-decode (MTP) is ACTIVE on this server.
+  [33mnote[0m plan.md scopes base-model throughput without spec decode -- for those
+  [33mnote[0m numbers restart run.sh with --speculative-config removed.
+
+[1m== batch sweep (Q1) -- ISL 16K, OSL 256[0m
+  [33mnote[0m skip batch_isl16k_c1 (result exists)
+
+  [1mbatch_isl16k_c4[0m  ISL=16384 OSL=256 conc=4 prompts=8 seed=55996
+    output tok/s   : 239.79699
+    total  tok/s   : 15598.045
+    req/s          : 0.936707
+    TTFT p50/p99 ms: 1274 / 2440
+    TPOT p50/p99 ms: 12 / 14
+    peak KV usage  : 0.057
+  [32mok[0m       cold run confirmed (0 new prefix-cache hits)
+  [33mnote[0m skip batch_isl16k_c16 (result exists)
+  [33mnote[0m skip batch_isl16k_c64 (result exists)
+
+[1m== summary[0m
+  label                   out tok/s  tot tok/s   TTFTp50   TPOTp50   KVpeak
+    batch_isl16k_c1           119.7     7788.6       721       5.1    0.014
+    batch_isl16k_c16          344.7    22421.8      2829      33.0    0.231
+    batch_isl16k_c4           239.8    15598.0      1274      11.8    0.057
+    batch_isl16k_c64          441.9    28745.0      3022     123.8    0.928
+
+  results: GLM-5.3-Flash/results/bf16kv-mtp-n1
+
+  Reporting reminders (project conventions):
+    - every number above is MEASURED; label it as such next to any analytical
+      prediction from plan.md
+    - carry hardware + quantization with each number (see manifest.txt)
+    - MTP/spec-decode state changes throughput; note whether it was on
+    - report achieved bandwidth as a FRACTION of 3.35 TB/s (H100) when you
+      claim "memory-bound"

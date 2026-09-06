@@ -1,0 +1,9 @@
+# Generated local previews/audits and interpreter cache
+artifacts/
+__pycache__/
+*.pyc
+
+# Office application lock files; do not delete while a document is open
+~$*
+
+# Keep PPTX deliverables, raw results, logs, and manifests available for review.
