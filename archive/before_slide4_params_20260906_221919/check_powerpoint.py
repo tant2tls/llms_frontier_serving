@@ -1,21 +1,17 @@
 """Render in installed PowerPoint and inspect text bounds."""
 from pathlib import Path
 import json
-import argparse
 import win32com.client
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--deck', type=Path, default=ROOT / 'SyFI_ML_Serving_refined.pptx')
-deck_path = parser.parse_args().deck.resolve()
 PREVIEW = ROOT / 'artifacts' / 'powerpoint_preview'
 PREVIEW.mkdir(parents=True, exist_ok=True)
 app = win32com.client.DispatchEx('PowerPoint.Application')
 deck = None
 issues = []
 try:
-    deck = app.Presentations.Open(str(deck_path), True, False, False)
+    deck = app.Presentations.Open(str(ROOT / 'SyFI_ML_Serving_refined.pptx'), True, False, False)
     slide_count = deck.Slides.Count
     hidden = []
     for slide in deck.Slides:

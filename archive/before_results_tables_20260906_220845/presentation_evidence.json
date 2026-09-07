@@ -1,0 +1,413 @@
+{
+  "scope": "Exact JSON inputs for charts; formulas in presentation_design.py; other facts sourced in report.md.",
+  "points": [
+    {
+      "slide": 9,
+      "path": "deepseek_v4_flash/results/mtp-off-image/batch_isl16k_c1.json",
+      "recorded_date": "20260902-060808",
+      "output_throughput": 85.03401010448958,
+      "median_tpot_ms": 7.93815566701632,
+      "median_ttft_ms": 716.7535163462162
+    },
+    {
+      "slide": 9,
+      "path": "deepseek_v4_flash/results/mtp-off-image/batch_isl16k_c4.json",
+      "recorded_date": "20260902-064030",
+      "output_throughput": 219.8052802490994,
+      "median_tpot_ms": 10.721146782823636,
+      "median_ttft_ms": 1906.3883172348142
+    },
+    {
+      "slide": 9,
+      "path": "deepseek_v4_flash/results/mtp-off-image/batch_isl16k_c16.json",
+      "recorded_date": "20260902-064127",
+      "output_throughput": 330.8794368636109,
+      "median_tpot_ms": 32.40075688443932,
+      "median_ttft_ms": 3945.805598050356
+    },
+    {
+      "slide": 9,
+      "path": "deepseek_v4_flash/results/mtp-off-image/batch_isl16k_c64.json",
+      "recorded_date": "20260902-064440",
+      "output_throughput": 389.3565488263399,
+      "median_tpot_ms": 148.469622097179,
+      "median_ttft_ms": 3642.912861891091
+    },
+    {
+      "slide": 9,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c1.json",
+      "recorded_date": "20260902-015503",
+      "output_throughput": 96.30941900404206,
+      "median_tpot_ms": 7.05557944727879,
+      "median_ttft_ms": 856.9473130628467
+    },
+    {
+      "slide": 9,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c4.json",
+      "recorded_date": "20260902-015541",
+      "output_throughput": 225.29681362584358,
+      "median_tpot_ms": 10.932360092798868,
+      "median_ttft_ms": 1742.3008941113949
+    },
+    {
+      "slide": 9,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c16.json",
+      "recorded_date": "20260902-015636",
+      "output_throughput": 359.17155296265526,
+      "median_tpot_ms": 33.57015370446093,
+      "median_ttft_ms": 2684.938210994005
+    },
+    {
+      "slide": 9,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c64.json",
+      "recorded_date": "20260902-015829",
+      "output_throughput": 447.06656333044793,
+      "median_tpot_ms": 129.51669973120386,
+      "median_ttft_ms": 2513.1567614153028
+    },
+    {
+      "slide": 9,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base-util082/batch_isl16k_c1.json",
+      "recorded_date": "20260902-091756",
+      "output_throughput": 106.23960342346348,
+      "median_tpot_ms": 6.970381616231274,
+      "median_ttft_ms": 597.9815740138292
+    },
+    {
+      "slide": 9,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base-util082/batch_isl16k_c4.json",
+      "recorded_date": "20260902-091835",
+      "output_throughput": 256.83776482354426,
+      "median_tpot_ms": 9.61598013253773,
+      "median_ttft_ms": 1496.1667181923985
+    },
+    {
+      "slide": 9,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base-util082/batch_isl16k_c16.json",
+      "recorded_date": "20260902-091925",
+      "output_throughput": 420.16088529055645,
+      "median_tpot_ms": 26.319584703328562,
+      "median_ttft_ms": 2917.300104163587
+    },
+    {
+      "slide": 9,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base-util082/batch_isl16k_c64.json",
+      "recorded_date": "20260902-092112",
+      "output_throughput": 517.7463133096054,
+      "median_tpot_ms": 110.08028010746428,
+      "median_ttft_ms": 2939.918457530439
+    },
+    {
+      "slide": 11,
+      "path": "deepseek_v4_flash/results/mtp-off-image/ctx_isl131072_c8.json",
+      "recorded_date": "20260902-061904",
+      "output_throughput": 34.66572543414688,
+      "median_tpot_ms": 144.17046117870248,
+      "median_ttft_ms": 26664.82410673052
+    },
+    {
+      "slide": 11,
+      "path": "GLM-5.3-Flash/results/bf16kv/ctx_isl131072_c8.json",
+      "recorded_date": "20260902-020235",
+      "output_throughput": 47.24317797740441,
+      "median_tpot_ms": 116.68617562116945,
+      "median_ttft_ms": 12891.470643691719
+    },
+    {
+      "slide": 11,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/ctx_isl131072_c8.json",
+      "recorded_date": "20260902-074908",
+      "output_throughput": 56.467593009506984,
+      "median_tpot_ms": 63.479719877096954,
+      "median_ttft_ms": 19835.577487014234
+    },
+    {
+      "slide": 12,
+      "path": "deepseek_v4_flash/results/mtp-off-image/prefix_p64k_n1.json",
+      "recorded_date": "20260902-062611",
+      "output_throughput": 198.2317561163796,
+      "median_tpot_ms": 12.264817270139853,
+      "median_ttft_ms": 1079.2671190574765
+    },
+    {
+      "slide": 12,
+      "path": "deepseek_v4_flash/results/mtp-off-image/prefix_p64k_n4.json",
+      "recorded_date": "20260902-062726",
+      "output_throughput": 391.64756526420064,
+      "median_tpot_ms": 11.569580603756156,
+      "median_ttft_ms": 1123.5250076279044
+    },
+    {
+      "slide": 12,
+      "path": "deepseek_v4_flash/results/mtp-off-image/prefix_p64k_n16.json",
+      "recorded_date": "20260902-063028",
+      "output_throughput": 114.60843789104882,
+      "median_tpot_ms": 29.874744357577725,
+      "median_ttft_ms": 8638.114226981997
+    },
+    {
+      "slide": 12,
+      "path": "GLM-5.3-Flash/results/bf16kv/prefix_p64k_n1.json",
+      "recorded_date": "20260902-020515",
+      "output_throughput": 265.2830629077568,
+      "median_tpot_ms": 12.600557341733401,
+      "median_ttft_ms": 1664.0244955196977
+    },
+    {
+      "slide": 12,
+      "path": "GLM-5.3-Flash/results/bf16kv/prefix_p64k_n4.json",
+      "recorded_date": "20260902-020633",
+      "output_throughput": 365.87467455504344,
+      "median_tpot_ms": 12.906384321988797,
+      "median_ttft_ms": 1496.701647527516
+    },
+    {
+      "slide": 12,
+      "path": "GLM-5.3-Flash/results/bf16kv/prefix_p64k_n16.json",
+      "recorded_date": "20260902-020833",
+      "output_throughput": 199.4401621848767,
+      "median_tpot_ms": 20.815275236964226,
+      "median_ttft_ms": 1342.1188462525606
+    },
+    {
+      "slide": 12,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/prefix_p64k_n1.json",
+      "recorded_date": "20260902-075405",
+      "output_throughput": 453.92705047597997,
+      "median_tpot_ms": 10.841010058043052,
+      "median_ttft_ms": 1470.5526838079095
+    },
+    {
+      "slide": 12,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/prefix_p64k_n4.json",
+      "recorded_date": "20260902-075518",
+      "output_throughput": 398.0573892947342,
+      "median_tpot_ms": 11.961227293838473,
+      "median_ttft_ms": 1207.4904879555106
+    },
+    {
+      "slide": 12,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/prefix_p64k_n16.json",
+      "recorded_date": "20260902-075659",
+      "output_throughput": 262.23575902931714,
+      "median_tpot_ms": 12.098607249265793,
+      "median_ttft_ms": 2999.3444615975022
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-on-noreuse/batch_c1.json",
+      "recorded_date": "20260901-161819",
+      "output_throughput": 115.29157379461944,
+      "median_tpot_ms": 5.110589371008032,
+      "median_ttft_ms": 737.660345621407
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-off/batch_c1.json",
+      "recorded_date": "20260901-163828",
+      "output_throughput": 92.32342939072598,
+      "median_tpot_ms": 7.993579787366531,
+      "median_ttft_ms": 714.0863239765167
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-on-noreuse/batch_c4.json",
+      "recorded_date": "20260901-161851",
+      "output_throughput": 251.78993690231061,
+      "median_tpot_ms": 9.104913195558622,
+      "median_ttft_ms": 1630.1425490528345
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-off/batch_c4.json",
+      "recorded_date": "20260901-163911",
+      "output_throughput": 222.0288498942533,
+      "median_tpot_ms": 10.512134418183681,
+      "median_ttft_ms": 1914.3299330025911
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-on-noreuse/batch_c16.json",
+      "recorded_date": "20260901-161949",
+      "output_throughput": 339.94020583992074,
+      "median_tpot_ms": 32.580014248835106,
+      "median_ttft_ms": 3543.1043971329927
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-off/batch_c16.json",
+      "recorded_date": "20260901-164016",
+      "output_throughput": 293.66424944432765,
+      "median_tpot_ms": 43.128852619259966,
+      "median_ttft_ms": 3993.576157838106
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-on-noreuse/batch_c64.json",
+      "recorded_date": "20260901-162156",
+      "output_throughput": 380.14782319799457,
+      "median_tpot_ms": 137.35000881567305,
+      "median_ttft_ms": 5374.990031123161
+    },
+    {
+      "slide": 13,
+      "path": "deepseek_v4_flash/results/mtp-off/batch_c64.json",
+      "recorded_date": "20260901-164237",
+      "output_throughput": 383.4362105956448,
+      "median_tpot_ms": 151.4175655174197,
+      "median_ttft_ms": 3686.95155903697
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv-mtp-n1/batch_isl16k_c1.json",
+      "recorded_date": "20260902-051951",
+      "output_throughput": 119.73771567907605,
+      "median_tpot_ms": 5.051815641276977,
+      "median_ttft_ms": 721.0245616734028
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c1.json",
+      "recorded_date": "20260902-015503",
+      "output_throughput": 96.30941900404206,
+      "median_tpot_ms": 7.05557944727879,
+      "median_ttft_ms": 856.9473130628467
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv-mtp-n1/batch_isl16k_c4.json",
+      "recorded_date": "20260902-052557",
+      "output_throughput": 239.79699777189856,
+      "median_tpot_ms": 11.821248123020519,
+      "median_ttft_ms": 1273.6979443579912
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c4.json",
+      "recorded_date": "20260902-015541",
+      "output_throughput": 225.29681362584358,
+      "median_tpot_ms": 10.932360092798868,
+      "median_ttft_ms": 1742.3008941113949
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv-mtp-n1/batch_isl16k_c16.json",
+      "recorded_date": "20260902-052137",
+      "output_throughput": 344.7015985726229,
+      "median_tpot_ms": 32.972835913738784,
+      "median_ttft_ms": 2829.1953541338444
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c16.json",
+      "recorded_date": "20260902-015636",
+      "output_throughput": 359.17155296265526,
+      "median_tpot_ms": 33.57015370446093,
+      "median_ttft_ms": 2684.938210994005
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv-mtp-n1/batch_isl16k_c64.json",
+      "recorded_date": "20260902-052331",
+      "output_throughput": 441.91253807792486,
+      "median_tpot_ms": 123.79661465757619,
+      "median_ttft_ms": 3022.4899919703603
+    },
+    {
+      "slide": 13,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c64.json",
+      "recorded_date": "20260902-015829",
+      "output_throughput": 447.06656333044793,
+      "median_tpot_ms": 129.51669973120386,
+      "median_ttft_ms": 2513.1567614153028
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/mtp-n1/batch_isl16k_c1.json",
+      "recorded_date": "20260902-081646",
+      "output_throughput": 125.91800449644396,
+      "median_tpot_ms": 5.555167250043036,
+      "median_ttft_ms": 657.8614646568894
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/batch_isl16k_c1.json",
+      "recorded_date": "20260902-075950",
+      "output_throughput": 107.68601115917755,
+      "median_tpot_ms": 6.962442843645227,
+      "median_ttft_ms": 602.4023415520787
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/mtp-n1/batch_isl16k_c4.json",
+      "recorded_date": "20260902-081038",
+      "output_throughput": 149.32149552523546,
+      "median_tpot_ms": 16.521137777496786,
+      "median_ttft_ms": 2305.673220194876
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/batch_isl16k_c4.json",
+      "recorded_date": "20260902-074236",
+      "output_throughput": 162.2197451573197,
+      "median_tpot_ms": 9.837982840105598,
+      "median_ttft_ms": 2250.113413669169
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/mtp-n1/batch_isl16k_c16.json",
+      "recorded_date": "20260902-081134",
+      "output_throughput": 322.1686235583321,
+      "median_tpot_ms": 37.01219445130989,
+      "median_ttft_ms": 1954.2923206463456
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/batch_isl16k_c16.json",
+      "recorded_date": "20260902-074330",
+      "output_throughput": 370.9707634528175,
+      "median_tpot_ms": 32.164793096336666,
+      "median_ttft_ms": 3167.9761465638876
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/mtp-n1/batch_isl16k_c64.json",
+      "recorded_date": "20260902-081326",
+      "output_throughput": 481.4827445952332,
+      "median_tpot_ms": 109.76872406534704,
+      "median_ttft_ms": 3887.816679663956
+    },
+    {
+      "slide": 13,
+      "path": "Qwen3.8-Flash-Next-FP8/results/base/batch_isl16k_c64.json",
+      "recorded_date": "20260902-074516",
+      "output_throughput": 517.8278898499514,
+      "median_tpot_ms": 110.05726496451626,
+      "median_ttft_ms": 2942.005123011768
+    },
+    {
+      "slide": 24,
+      "path": "GLM-5.3-Flash/results/bf16kv/batch_isl16k_c64.json",
+      "recorded_date": "20260902-015829",
+      "output_throughput": 447.06656333044793,
+      "median_tpot_ms": 129.51669973120386,
+      "median_ttft_ms": 2513.1567614153028
+    },
+    {
+      "slide": 24,
+      "path": "GLM-5.3-Flash/results/bf16kv-fi618/batch_isl16k_c64.json",
+      "recorded_date": "20260902-050346",
+      "output_throughput": 348.77621063616044,
+      "median_tpot_ms": 167.8522968226496,
+      "median_ttft_ms": 2537.8653816878796
+    },
+    {
+      "slide": 24,
+      "path": "GLM-5.3-Flash/results/fp8kv-fi618/batch_isl16k_c64.json",
+      "recorded_date": "20260902-041802",
+      "output_throughput": 262.004129318282,
+      "median_tpot_ms": 227.1530613997111,
+      "median_ttft_ms": 2958.3464385941625
+    }
+  ]
+}

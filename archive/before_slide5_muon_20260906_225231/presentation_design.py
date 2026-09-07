@@ -24,8 +24,8 @@ MAIN_COUNT=16
 TOTAL_COUNT=24
 notes=['']*TOTAL_COUNT
 REFERENCES={
-    3:['https://qwen.ai/blog?id=qwen3.8-flash-next','https://arxiv.org/html/2608.30320v1','https://huggingface.co/Qwen/Qwen3.8-Flash-Next-FP8'],
-    5:['https://kellerjordan.github.io/posts/muon/','https://arxiv.org/abs/1711.05101','https://github.com/KellerJordan/Muon/blob/master/muon.py','https://pytorch.org/blog/using-muon-optimizer-with-deepspeed/'],
+    3:['https://arxiv.org/html/2606.19348v1','https://arxiv.org/html/2608.30320v1'],
+    5:['https://kellerjordan.github.io/posts/muon/','https://arxiv.org/abs/1711.05101','https://github.com/KellerJordan/Muon'],
     6:['https://github.com/deepseek-ai/DeepSeek-V3','https://arxiv.org/abs/2211.17192','https://www.lmsys.org/blog/2026-08-26-qwen-flash-next/'],
 }
 
@@ -170,22 +170,25 @@ for x,y,k,h,b,c in [(.6,2.48,'PART I / FRONTIER DESIGN','Where efficiency comes 
     text(s,b,x+.2,y+.91,5.45,.46,14,False,MUTED)
 takeaway(s,'Compare in the same order throughout: DeepSeek → GLM → Qwen. Same questions, explicit controls.')
 
-s=base('QSA saves work in both indexing and attention','Sparse attention / Qwen case study','Qwen’s hybrid: three GDN layers keep compact state; one QSA layer retrieves selected history.',source='Sources: Qwen3.8-Flash-Next release blog; technical report §2.1.2 / Fig. 6; saved Qwen config',caveat='Published module timings include indexing; decode includes 3 MTP steps. Not local H100 or whole-model speedups.')
-qsa_config_path='Qwen3.8-Flash-Next-FP8/cache/hub/models--Qwen--Qwen3.8-Flash-Next-FP8/snapshots/236dfdf285828023ca3bcd3f37366c58a3469b13/config.json'
-qsa_config=json.loads((ROOT/qsa_config_path).read_text(encoding='utf-8'))['text_config']
-qsa_ratio=qsa_config['indexer_compress_ratio']; qsa_budget=qsa_config['indexer_budget']; qsa_prefix=131072
-assert qsa_ratio==4 and qsa_budget==2048
-text(s,f'Illustrative complete prefix: {qsa_prefix:,} tokens · one query · block size {qsa_ratio} · token budget {qsa_budget:,}',.72,2.35,12,.3,15,True,MUTED)
-for i,(k,h,b,col) in enumerate([
-    ('1 / COMPRESS INDEX KEYS',f'{qsa_prefix//qsa_ratio:,} index keys','Pool four adjacent keys.\n4× fewer scoring candidates.',TEAL),
-    ('2 / SELECT MICRO-BLOCKS',f'{qsa_budget//qsa_ratio:,} selected blocks','Score blocks for this query;\nkeep the most relevant regions.',PURPLE),
-    ('3 / READ ORIGINAL TOKENS',f'{qsa_budget:,} tokens','Expand selected blocks;\nattend to their original KV.',ORANGE),
-]):
-    card(s,.6+i*4.12,2.79,3.87,2.28,k,h,b,col)
-for xx in (4.48,8.60): text(s,'→',xx,3.66,.23,.35,19,True,MUTED)
-text(s,'Incomplete tail tokens are included too. These counts illustrate work reduction, not measured speedup.',.74,5.11,12,.24,11,False,MUTED)
-text(s,'Qwen reports at 1M context vs dense GQA:  7.6× prefill  |  4.9× decode',.73,5.48,12,.31,18,True)
-takeaway(s,'Two savings: score fewer index keys, then compute attention on fewer original tokens.')
+s=base('Sparse attention reduces reads; selection has a cost','Sparse attention','A query needs useful history; the system must find, gather and process it.',source='Sources: DeepSeek-V4 report §2.3; Qwen3.8-Next report §2.1.2; report.md §2',caveat='Conceptual operator diagram. Sparse kernel savings and vendor comparisons are not local end-to-end speedups.')
+for i,(title,kind,desc,col) in enumerate([('Dense history','dense','All available\npositions\n\nCore prefill:\nO(S²)',MUTED),('Sparse selection','sparse','Selected entries\nplus index cost\n\nCore attention:\nO(SK)',TEAL),('Compressed history','compressed','Summaries\nplus local tail\n\nFewer entries;\nextra state',PURPLE)]):
+    xx=.6+i*4.12
+    rect(s,xx,2.5,3.87,2.94,WHITE)
+    text(s,title,xx+.18,2.69,3.51,.42,21,True,col)
+    # Original schematic, not a copied research figure or measured attention pattern.
+    # Rows are query positions; columns are history entries, with causal availability.
+    count=10 if kind!='compressed' else 5
+    cell=.153 if count==10 else .306
+    for row in range(10):
+        for c in range(count):
+            causal=c<=row if count==10 else 2*c<=row
+            selected=causal and (kind!='sparse' or c in {row,max(0,row-1),max(0,row-4)})
+            a=s.shapes.add_shape(MSO_SHAPE.RECTANGLE,Inches(xx+.18+c*cell),Inches(3.36+row*.153),Inches(cell-.025),Inches(.128))
+            a.fill.solid(); a.fill.fore_color.rgb=rgb(col if selected else 'E7EDF1'); a.line.fill.background()
+    text(s,'query × history',xx+.18,5.01,1.66,.25,10,False,MUTED)
+    text(s,desc,xx+1.96,3.35,1.72,1.84,14,False,MUTED)
+text(s,'Sparse path = indexer + top-k + gather + selected attention + state management',.74,5.5,12,.3,17,True,ORANGE)
+takeaway(s,'Prediction: the crossover depends on context length, selection overhead, kernel efficiency and quality.')
 
 s=base('Compare model size, active parameters and layer mix','Architecture comparison','Text-only base model · MTP and vision excluded · B = billion parameters',source='Source: report.md §2; per-model history/report.md parameter buckets and recorded configurations',caveat='Prior tensor accounting, not a new checkpoint recount. Base totals and active-GEMM estimates are not vendor headline definitions.')
 model_matrix(s,[
@@ -197,15 +200,11 @@ model_matrix(s,[
 text(s,'*DeepSeek/GLM: derived from rounded buckets. †Active GEMM path; Qwen’s 51.23B lookup is included only in base total.',.72,5.62,12,.23,12,False,MUTED)
 takeaway(s,'Sparse expert use reduces active work; parameter counts alone do not rank serving speed.')
 
-s=base('Muon: 50% less optimizer state, matrix geometry','Training efficiency','For matrix parameters optimized with Muon · equal state precision · training updates, not inference',source='Sources: Keller Jordan, Muon explanation + reference code; PyTorch / DeepSpeed Muon; AdamW paper',caveat='50% covers persistent optimizer-state tensors only; excludes weights, gradients, activations and workspace. No local training A/B.')
-table(s,['Comparison','AdamW','Muon'],[
-    ['Stored state / parameter','2 values: first moment m\n+ second moment v','1 value: momentum'],
-    ['FP32 state / parameter','8 bytes','4 bytes → 50% less'],
-    ['Update geometry','Elementwise rescaling;\nno matrix-direction normalization','Joint matrix transformation;\napproximate orthogonalization'],
-],[2.5,4.8,4.8],y=2.42,row_h=.68,size=17)
-s.shapes[-1].table.cell(0,2).fill.fore_color.rgb=rgb(PURPLE)
-text(s,'Muon uses matrix products to couple entries; AdamW’s adaptive scaling treats coordinates separately.',.73,5.39,11.95,.31,16,True)
-takeaway(s,'One state buffer instead of two; matrix geometry instead of coordinate-wise rescaling.')
+s=base('Muon changes training updates; AdamW still has a role','Training efficiency','A matrix-aware optimizer is a training design choice, not a decode kernel.',source='Sources: Jordan, Muon; Loshchilov & Hutter, AdamW; DeepSeek and Qwen reports',caveat='Published optimizer recipes; no local training comparison. GLM optimizer recipe is not established by the sources used here.')
+card(s,.6,2.45,5.92,2.97,'ADAMW','Coordinate-wise scaling','Momentum + second-moment scaling\nDecoupled weight decay\nEmbeddings and other selected groups',MUTED)
+card(s,6.76,2.45,5.92,2.97,'MUON','Matrix update geometry','Momentum → approximate orthogonalization\nNewton–Schulz matrix operations\nMatrix-aware partitioning and batching',PURPLE)
+text(s,'DeepSeek: mixed Muon/AdamW   |   GLM: not established here   |   Qwen: mixed Muon/AdamW',.73,5.48,12,.31,15,True)
+takeaway(s,'Evaluate quality reached per training GPU-hour; the optimizer update is absent from serving.')
 
 s=base('Day-0 speculation: ship a draft, still pay for verification','Native MTP','Here “zero-day” means native drafting and runtime support at release, not zero overhead.',source='Sources: DeepSeek-V3 MTP; Leviathan et al., speculative decoding; SGLang Qwen day-0 support',caveat='Runtime support is version-specific. Target-distribution preservation requires correct acceptance/resampling and state handling.')
 for i,(k,h,b,col) in enumerate([('01 / DRAFT','Propose future tokens','Native MTP can avoid waiting for a separately trained draft model.',TEAL),('02 / VERIFY','Target checks candidates','Batch candidate verification; keep valid progress and resample as required.',PURPLE),('03 / COMMIT','Restore consistent state','Discard rejected suffix state; commit KV, indices and recurrent updates.',ORANGE)]):

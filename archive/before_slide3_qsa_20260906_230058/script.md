@@ -30,20 +30,20 @@ Part two asks where those savings survive in a deployed system. I vary concurren
 My approach is to move from a mechanism to a prediction, then to evidence and a possible correction. Across comparisons, DeepSeek comes first in orange, GLM second in purple, and Qwen third in teal. The measured contribution is their tradeoff map and the debugging evidence behind it.
 <!-- END SCRIPT -->
 
-## Slide 3 — QSA saves work in both indexing and attention
+## Slide 3 — Sparse attention reduces reads; selection has a cost
 
 **1:20 · cumulative 2:40**
 
 <!-- SCRIPT 3 -->
-[Point across the three stages.] Qwen's design addresses two costs: attending to history and finding which history matters. Three of every four layers use GDN's fixed-size state; the remaining QSA layer retrieves selected history.
+[Point across the three designs.] Dense attention considers the full available history. Sparse attention selects a subset, while compression changes how history is represented. These are related but distinct ways to reduce work.
 
-For an illustrative complete prefix of 131,072 tokens, QSA pools index keys in groups of four. The indexer scores 32,768 candidates, selects 512 blocks, then expands them to 2,048 original tokens for core attention. Any incomplete final block is also included. These settings match our saved Qwen configuration.
+For a sequence of length S, dense prefill attention-score work grows quadratically. If each query attends to K selected entries, that attention component is roughly proportional to S times K. But that expression does not include the indexer, top-k selection, gathers or state management. Index scoring can still grow with the history.
 
-The distinction matters: compressed keys guide selection; core attention still reads original token KV. This reduces indexing and attention work without implying a fixed-size KV cache. Scoring still grows with the number of blocks.
+DeepSeek V4 combines sparse selection with compressed representations. Qwen QSA also has a compressed indexer, while its recurrent layers supply a different memory mechanism.
 
-[Point to the published result.] At one million tokens, Qwen reports 7.6 times faster prefill and 4.9 times faster decode than dense GQA for the attention module, including indexing. The prefill test uses sixteen-thousand-token chunks at batch one; decode uses batch four with three additional MTP steps.
+The prediction is a context-dependent crossover: savings become useful when they exceed selection and kernel overhead. Short contexts may not amortize that overhead. Selection quality also matters.
 
-These are published module results, not whole-model speedups or our local H100 measurements. Our study has no matched dense control.
+Our local measurements can characterize the context regime. They do not isolate a sparse-versus-dense speedup because we have no matched dense control.
 <!-- END SCRIPT -->
 
 ## Slide 4 — Compare model size, active parameters and layer mix

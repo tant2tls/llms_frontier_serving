@@ -89,65 +89,65 @@ My approach is to move from a mechanism to a prediction, then to evidence and a 
 
 ---
 
-## 3. QSA saves work in both indexing and attention
+## 3. Sparse attention reduces reads; selection has a cost
 
-Qwen’s hybrid: three GDN layers keep compact state; one QSA layer retrieves selected history.
+A query needs useful history; the system must find, gather and process it.
 
-Illustrative complete prefix: 131,072 tokens · one query · block size 4 · token budget 2,048
+Dense history
 
-1 / COMPRESS INDEX KEYS
+query × history
 
-32,768 index keys
+All available  
+positions  
+  
+Core prefill:  
+O(S²)
 
-Pool four adjacent keys.  
-4× fewer scoring candidates.
+Sparse selection
 
-2 / SELECT MICRO-BLOCKS
+query × history
 
-512 selected blocks
+Selected entries  
+plus index cost  
+  
+Core attention:  
+O(SK)
 
-Score blocks for this query;  
-keep the most relevant regions.
+Compressed history
 
-3 / READ ORIGINAL TOKENS
+query × history
 
-2,048 tokens
+Summaries  
+plus local tail  
+  
+Fewer entries;  
+extra state
 
-Expand selected blocks;  
-attend to their original KV.
+Sparse path = indexer + top-k + gather + selected attention + state management
 
-→
+Prediction: the crossover depends on context length, selection overhead, kernel efficiency and quality.
 
-→
+**Boundary:** Conceptual operator diagram. Sparse kernel savings and vendor comparisons are not local end-to-end speedups.
 
-Incomplete tail tokens are included too. These counts illustrate work reduction, not measured speedup.
-
-Qwen reports at 1M context vs dense GQA:  7.6× prefill  |  4.9× decode
-
-Two savings: score fewer index keys, then compute attention on fewer original tokens.
-
-**Boundary:** Published module timings include indexing; decode includes 3 MTP steps. Not local H100 or whole-model speedups.
-
-Sources: Qwen3.8-Flash-Next release blog; technical report §2.1.2 / Fig. 6; saved Qwen config
+Sources: DeepSeek-V4 report §2.3; Qwen3.8-Next report §2.1.2; report.md §2
 
 <!--
 SLIDE 3 — 1:20; cumulative 2:40.
 
 FULL SPOKEN SCRIPT
-[Point across the three stages.] Qwen's design addresses two costs: attending to history and finding which history matters. Three of every four layers use GDN's fixed-size state; the remaining QSA layer retrieves selected history.
+[Point across the three designs.] Dense attention considers the full available history. Sparse attention selects a subset, while compression changes how history is represented. These are related but distinct ways to reduce work.
 
-For an illustrative complete prefix of 131,072 tokens, QSA pools index keys in groups of four. The indexer scores 32,768 candidates, selects 512 blocks, then expands them to 2,048 original tokens for core attention. Any incomplete final block is also included. These settings match our saved Qwen configuration.
+For a sequence of length S, dense prefill attention-score work grows quadratically. If each query attends to K selected entries, that attention component is roughly proportional to S times K. But that expression does not include the indexer, top-k selection, gathers or state management. Index scoring can still grow with the history.
 
-The distinction matters: compressed keys guide selection; core attention still reads original token KV. This reduces indexing and attention work without implying a fixed-size KV cache. Scoring still grows with the number of blocks.
+DeepSeek V4 combines sparse selection with compressed representations. Qwen QSA also has a compressed indexer, while its recurrent layers supply a different memory mechanism.
 
-[Point to the published result.] At one million tokens, Qwen reports 7.6 times faster prefill and 4.9 times faster decode than dense GQA for the attention module, including indexing. The prefill test uses sixteen-thousand-token chunks at batch one; decode uses batch four with three additional MTP steps.
+The prediction is a context-dependent crossover: savings become useful when they exceed selection and kernel overhead. Short contexts may not amortize that overhead. Selection quality also matters.
 
-These are published module results, not whole-model speedups or our local H100 measurements. Our study has no matched dense control.
+Our local measurements can characterize the context regime. They do not isolate a sparse-versus-dense speedup because we have no matched dense control.
 
 PRIMARY REFERENCES (checked 6 September 2026)
-https://qwen.ai/blog?id=qwen3.8-flash-next
+https://arxiv.org/html/2606.19348v1
 https://arxiv.org/html/2608.30320v1
-https://huggingface.co/Qwen/Qwen3.8-Flash-Next-FP8
 -->
 
 ---

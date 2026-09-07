@@ -24,8 +24,8 @@ MAIN_COUNT=16
 TOTAL_COUNT=24
 notes=['']*TOTAL_COUNT
 REFERENCES={
-    3:['https://qwen.ai/blog?id=qwen3.8-flash-next','https://arxiv.org/html/2608.30320v1','https://huggingface.co/Qwen/Qwen3.8-Flash-Next-FP8'],
-    5:['https://kellerjordan.github.io/posts/muon/','https://arxiv.org/abs/1711.05101','https://github.com/KellerJordan/Muon/blob/master/muon.py','https://pytorch.org/blog/using-muon-optimizer-with-deepspeed/'],
+    3:['https://arxiv.org/html/2606.19348v1','https://arxiv.org/html/2608.30320v1'],
+    5:['https://kellerjordan.github.io/posts/muon/','https://arxiv.org/abs/1711.05101','https://github.com/KellerJordan/Muon'],
     6:['https://github.com/deepseek-ai/DeepSeek-V3','https://arxiv.org/abs/2211.17192','https://www.lmsys.org/blog/2026-08-26-qwen-flash-next/'],
 }
 
@@ -170,42 +170,41 @@ for x,y,k,h,b,c in [(.6,2.48,'PART I / FRONTIER DESIGN','Where efficiency comes 
     text(s,b,x+.2,y+.91,5.45,.46,14,False,MUTED)
 takeaway(s,'Compare in the same order throughout: DeepSeek → GLM → Qwen. Same questions, explicit controls.')
 
-s=base('QSA saves work in both indexing and attention','Sparse attention / Qwen case study','Qwen’s hybrid: three GDN layers keep compact state; one QSA layer retrieves selected history.',source='Sources: Qwen3.8-Flash-Next release blog; technical report §2.1.2 / Fig. 6; saved Qwen config',caveat='Published module timings include indexing; decode includes 3 MTP steps. Not local H100 or whole-model speedups.')
-qsa_config_path='Qwen3.8-Flash-Next-FP8/cache/hub/models--Qwen--Qwen3.8-Flash-Next-FP8/snapshots/236dfdf285828023ca3bcd3f37366c58a3469b13/config.json'
-qsa_config=json.loads((ROOT/qsa_config_path).read_text(encoding='utf-8'))['text_config']
-qsa_ratio=qsa_config['indexer_compress_ratio']; qsa_budget=qsa_config['indexer_budget']; qsa_prefix=131072
-assert qsa_ratio==4 and qsa_budget==2048
-text(s,f'Illustrative complete prefix: {qsa_prefix:,} tokens · one query · block size {qsa_ratio} · token budget {qsa_budget:,}',.72,2.35,12,.3,15,True,MUTED)
-for i,(k,h,b,col) in enumerate([
-    ('1 / COMPRESS INDEX KEYS',f'{qsa_prefix//qsa_ratio:,} index keys','Pool four adjacent keys.\n4× fewer scoring candidates.',TEAL),
-    ('2 / SELECT MICRO-BLOCKS',f'{qsa_budget//qsa_ratio:,} selected blocks','Score blocks for this query;\nkeep the most relevant regions.',PURPLE),
-    ('3 / READ ORIGINAL TOKENS',f'{qsa_budget:,} tokens','Expand selected blocks;\nattend to their original KV.',ORANGE),
-]):
-    card(s,.6+i*4.12,2.79,3.87,2.28,k,h,b,col)
-for xx in (4.48,8.60): text(s,'→',xx,3.66,.23,.35,19,True,MUTED)
-text(s,'Incomplete tail tokens are included too. These counts illustrate work reduction, not measured speedup.',.74,5.11,12,.24,11,False,MUTED)
-text(s,'Qwen reports at 1M context vs dense GQA:  7.6× prefill  |  4.9× decode',.73,5.48,12,.31,18,True)
-takeaway(s,'Two savings: score fewer index keys, then compute attention on fewer original tokens.')
+s=base('Sparse attention reduces reads; selection has a cost','Sparse attention','A query needs useful history; the system must find, gather and process it.',source='Sources: DeepSeek-V4 report §2.3; Qwen3.8-Next report §2.1.2; report.md §2',caveat='Conceptual operator diagram. Sparse kernel savings and vendor comparisons are not local end-to-end speedups.')
+for i,(title,kind,desc,col) in enumerate([('Dense history','dense','All available\npositions\n\nCore prefill:\nO(S²)',MUTED),('Sparse selection','sparse','Selected entries\nplus index cost\n\nCore attention:\nO(SK)',TEAL),('Compressed history','compressed','Summaries\nplus local tail\n\nFewer entries;\nextra state',PURPLE)]):
+    xx=.6+i*4.12
+    rect(s,xx,2.5,3.87,2.94,WHITE)
+    text(s,title,xx+.18,2.69,3.51,.42,21,True,col)
+    # Original schematic, not a copied research figure or measured attention pattern.
+    # Rows are query positions; columns are history entries, with causal availability.
+    count=10 if kind!='compressed' else 5
+    cell=.153 if count==10 else .306
+    for row in range(10):
+        for c in range(count):
+            causal=c<=row if count==10 else 2*c<=row
+            selected=causal and (kind!='sparse' or c in {row,max(0,row-1),max(0,row-4)})
+            a=s.shapes.add_shape(MSO_SHAPE.RECTANGLE,Inches(xx+.18+c*cell),Inches(3.36+row*.153),Inches(cell-.025),Inches(.128))
+            a.fill.solid(); a.fill.fore_color.rgb=rgb(col if selected else 'E7EDF1'); a.line.fill.background()
+    text(s,'query × history',xx+.18,5.01,1.66,.25,10,False,MUTED)
+    text(s,desc,xx+1.96,3.35,1.72,1.84,14,False,MUTED)
+text(s,'Sparse path = indexer + top-k + gather + selected attention + state management',.74,5.5,12,.3,17,True,ORANGE)
+takeaway(s,'Prediction: the crossover depends on context length, selection overhead, kernel efficiency and quality.')
 
-s=base('Compare model size, active parameters and layer mix','Architecture comparison','Text-only base model · MTP and vision excluded · B = billion parameters',source='Source: report.md §2; per-model history/report.md parameter buckets and recorded configurations',caveat='Prior tensor accounting, not a new checkpoint recount. Base totals and active-GEMM estimates are not vendor headline definitions.')
+s=base('Compare the same architectural dimensions','Architecture comparison','All three use MoE; the main contrast is how they represent and retrieve history.',source='Source: report.md §2; recorded configuration and tensor analyses',caveat='Configuration facts and prior tensor accounting; these do not isolate the cause of measured speed differences.')
 model_matrix(s,[
-    ('Base-model params*',['≈290.9B','≈313.3B','176.94B']),
-    ('Active params / token†',['14.08B','17.38B','7.27B']),
-    ('Routed experts / selected',['256 / 6','288 / 8','512 / 10']),
     ('Attention layers',['43 sparse;\ncompressed history','34 recurrent KDA\n+ 11 sparse','36 recurrent GDN\n+ 12 QSA']),
+    ('State to manage',['Summaries, indices\nand local tails','Recurrent checkpoints\n+ retained history','Recurrent checkpoints\n+ retained history']),
+    ('Experts / selected',['256 / 6','288 / 8','512 / 10']),
+    ('Active GEMM path*',['14.08B','17.38B','7.27B']),
 ],row_h=.63,size=16)
-text(s,'*DeepSeek/GLM: derived from rounded buckets. †Active GEMM path; Qwen’s 51.23B lookup is included only in base total.',.72,5.62,12,.23,12,False,MUTED)
-takeaway(s,'Sparse expert use reduces active work; parameter counts alone do not rank serving speed.')
+text(s,'*Prior tensor analysis; Qwen also has a 51.23B lookup table, not a full per-token GEMM.',.72,5.62,12,.23,12,False,MUTED)
+takeaway(s,'DeepSeek compresses history; GLM and Qwen combine recurrence with history retrieval.')
 
-s=base('Muon: 50% less optimizer state, matrix geometry','Training efficiency','For matrix parameters optimized with Muon · equal state precision · training updates, not inference',source='Sources: Keller Jordan, Muon explanation + reference code; PyTorch / DeepSpeed Muon; AdamW paper',caveat='50% covers persistent optimizer-state tensors only; excludes weights, gradients, activations and workspace. No local training A/B.')
-table(s,['Comparison','AdamW','Muon'],[
-    ['Stored state / parameter','2 values: first moment m\n+ second moment v','1 value: momentum'],
-    ['FP32 state / parameter','8 bytes','4 bytes → 50% less'],
-    ['Update geometry','Elementwise rescaling;\nno matrix-direction normalization','Joint matrix transformation;\napproximate orthogonalization'],
-],[2.5,4.8,4.8],y=2.42,row_h=.68,size=17)
-s.shapes[-1].table.cell(0,2).fill.fore_color.rgb=rgb(PURPLE)
-text(s,'Muon uses matrix products to couple entries; AdamW’s adaptive scaling treats coordinates separately.',.73,5.39,11.95,.31,16,True)
-takeaway(s,'One state buffer instead of two; matrix geometry instead of coordinate-wise rescaling.')
+s=base('Muon changes training updates; AdamW still has a role','Training efficiency','A matrix-aware optimizer is a training design choice, not a decode kernel.',source='Sources: Jordan, Muon; Loshchilov & Hutter, AdamW; DeepSeek and Qwen reports',caveat='Published optimizer recipes; no local training comparison. GLM optimizer recipe is not established by the sources used here.')
+card(s,.6,2.45,5.92,2.97,'ADAMW','Coordinate-wise scaling','Momentum + second-moment scaling\nDecoupled weight decay\nEmbeddings and other selected groups',MUTED)
+card(s,6.76,2.45,5.92,2.97,'MUON','Matrix update geometry','Momentum → approximate orthogonalization\nNewton–Schulz matrix operations\nMatrix-aware partitioning and batching',PURPLE)
+text(s,'DeepSeek: mixed Muon/AdamW   |   GLM: not established here   |   Qwen: mixed Muon/AdamW',.73,5.48,12,.31,15,True)
+takeaway(s,'Evaluate quality reached per training GPU-hour; the optimizer update is absent from serving.')
 
 s=base('Day-0 speculation: ship a draft, still pay for verification','Native MTP','Here “zero-day” means native drafting and runtime support at release, not zero overhead.',source='Sources: DeepSeek-V3 MTP; Leviathan et al., speculative decoding; SGLang Qwen day-0 support',caveat='Runtime support is version-specific. Target-distribution preservation requires correct acceptance/resampling and state handling.')
 for i,(k,h,b,col) in enumerate([('01 / DRAFT','Propose future tokens','Native MTP can avoid waiting for a separately trained draft model.',TEAL),('02 / VERIFY','Target checks candidates','Batch candidate verification; keep valid progress and resample as required.',PURPLE),('03 / COMMIT','Restore consistent state','Discard rejected suffix state; commit KV, indices and recurrent updates.',ORANGE)]):
@@ -226,18 +225,12 @@ text(s,'ARM BOUNDARY',.65,5.38,1.8,.25,11,True,ORANGE)
 text(s,'Qwen batch: base-util082   |   Qwen context/prefix: earlier base pool',2.44,5.32,10.1,.4,17,True)
 takeaway(s,'Concurrency caps client requests; output tok/s includes input work; TTFT includes queueing.')
 
-s=base('Higher concurrency buys throughput at a latency cost','01 / Kan’s throughput question','16,384 input / 256 output · 8 × H100 · MTP off · c = client concurrency cap, not fixed GPU batch size',source='Source: throughput.md; main JSONs — DeepSeek mtp-off-image; GLM bf16kv; Qwen base-util082',caveat='Output rate includes input processing; TTFT includes queueing. Different deployed configurations; no quality or phase-only comparison.')
+s=base('Qwen leads the corrected 16K throughput grid','01 / Throughput','Output tokens/s ↑ · 16,384 input / 256 output · MTP off',source='Source: main batch JSONs — Qwen base-util082; GLM bf16kv; DeepSeek mtp-off-image',caveat='Deployment comparison; quality unmeasured. Lines connect measured concurrency categories, not evenly spaced numeric intervals.')
 cs=[1,4,16,64]; batch={m:[read(a,f'batch_isl16k_c{c}') for c in cs] for m,a in ARMS.items()}
-throughput_rows=[[f'Output tok/s ↑ · c{c}',*[f"{batch[m][j]['output_throughput']:.1f}" for m in MODEL_ORDER]] for j,c in enumerate(cs)]
-throughput_rows += [
-    ['Median TTFT (s) ↓ · c64',*[f"{batch[m][-1]['median_ttft_ms']/1000:.2f}" for m in MODEL_ORDER]],
-    ['Median TPOT (ms/token) ↓ · c64',*[f"{batch[m][-1]['median_tpot_ms']:.1f}" for m in MODEL_ORDER]],
-]
-table(s,['Metric / concurrency',*MODEL_ORDER],throughput_rows,[3.7,2.8,2.8,2.8],y=2.4,row_h=.38,size=17)
-for j,m in enumerate(MODEL_ORDER,1):
-    s.shapes[-1].table.cell(0,j).fill.fore_color.rgb=rgb(COLORS[m])
-text(s,'c64: GLM gives the earliest first token; Qwen leads output rate and token spacing.',.73,5.31,11.9,.34,18,True)
-takeaway(s,'c1 → c64: output rate grows 4.6–4.9×, while median time per output token grows 16–19×.')
+chart(s,cs,[(m,[d['output_throughput'] for d in batch[m]],COLORS[m]) for m in MODEL_ORDER],.55,2.4,8.5,3.27,ymax=600,unit=200)
+text(s,'Client concurrency cap',3,5.62,4,.23,12,False,MUTED)
+card(s,9.36,2.54,3.3,2.97,'At concurrency 64','517.7 tok/s','Qwen / GLM       1.16×\nQwen / DeepSeek 1.33×\n\nObserved throughput lead',TEAL)
+takeaway(s,'64× more concurrency yields only 4.6–4.9× more output throughput.')
 
 s=base('All three buy throughput with higher token latency','01 / Operating point','Median time per output token, milliseconds ↓ · same 16K batch arms as the preceding slide',source='Source: main batch JSONs — DeepSeek mtp-off-image; GLM bf16kv; Qwen base-util082',caveat='Median TPOT describes output spacing, not first-token latency or an SLO pass rate. Concurrency positions are categories.')
 chart(s,cs,[(m,[d['median_tpot_ms'] for d in batch[m]],COLORS[m]) for m in MODEL_ORDER],.55,2.43,8.4,3.24,ymax=180,unit=60)
@@ -272,22 +265,16 @@ line(s,11.9,3.2,11.9,4.65,ORANGE,2)
 text(s,'Then branch safely; copy or restore mutable state.',7.51,4.82,4.75,.57,16,False,MUTED)
 takeaway(s,'DeepSeek and GLM peak at four prefixes; Qwen peaks at one in its qualified arm.')
 
-s=base('MTP gains fade as concurrency rises','03 / Speculative results','One draft token · 16K input / 256 output · throughput change = (MTP / paired off − 1) × 100%',source='Source: speculative.md; DeepSeek off/on-noreuse; GLM bf16kv/n1; Qwen original base/mtp-n1',caveat='DeepSeek: historical runtime, missing cold telemetry. GLM: strongest control. Qwen: startup/pool confounded. No repeat-based uncertainty.')
+s=base('Compare MTP within each model’s own baseline','03 / MTP','Output-throughput ratio: MTP ÷ paired base · 16K input / 256 output · identical axes, different control strength',source='Source: report.md §5; DeepSeek historical off/on-noreuse; GLM bf16kv/n1; Qwen original base/mtp-n1',caveat='These are not an equally controlled three-model A/B. Do not substitute corrected Qwen batch or newer DeepSeek baselines.')
 mtp_pairs=[('DeepSeek','deepseek_v4_flash/results/mtp-off','deepseek_v4_flash/results/mtp-on-noreuse','Historical runtime;\nnewer cold telemetry absent'),('GLM',ARMS['GLM'],'GLM-5.3-Flash/results/bf16kv-mtp-n1','Strongest control;\none draft token'),('Qwen','Qwen3.8-Flash-Next-FP8/results/base','Qwen3.8-Flash-Next-FP8/results/mtp-n1','Pool/startup confounded;\none draft token')]
-mtp_results={}
-for m,off,on,qualification in mtp_pairs:
+for j,(m,off,on,qualification) in enumerate(mtp_pairs):
+    xx=.55+j*4.14
+    text(s,m,xx+.18,2.42,3.7,.38,22,True,COLORS[m])
     names=[f'batch_c{c}' if m=='DeepSeek' else f'batch_isl16k_c{c}' for c in cs]
-    mtp_results[m]=[(read(off,name),read(on,name)) for name in names]
-mtp_rows=[]
-for j,c in enumerate(cs):
-    changes=[100*(mtp_results[m][j][1]['output_throughput']/mtp_results[m][j][0]['output_throughput']-1) for m in MODEL_ORDER]
-    mtp_rows.append([f'Throughput change · c{c}',*[f'{change:+.1f}%' for change in changes]])
-mtp_rows.append(['Draft acceptance · c64',*[f"{mtp_results[m][-1][1]['spec_decode_acceptance_rate']:.1f}%" for m in MODEL_ORDER]])
-table(s,['Metric / concurrency',*MODEL_ORDER],mtp_rows,[3.7,2.8,2.8,2.8],y=2.4,row_h=.43,size=18)
-for j,m in enumerate(MODEL_ORDER,1):
-    s.shapes[-1].table.cell(0,j).fill.fore_color.rgb=rgb(COLORS[m])
-text(s,'GLM: 71.7% of drafts accepted at c64, yet output throughput falls 1.2%.',.73,5.23,11.9,.34,18,True)
-takeaway(s,'Light-load gains; no recorded gain at c64. High acceptance alone does not ensure a speedup.')
+    values=[read(on,name)['output_throughput']/read(off,name)['output_throughput'] for name in names]
+    chart(s,cs,[(m,values,COLORS[m]),('Base = 1×',[1]*4,MUTED)],xx,2.98,4.02,2.24,ymin=.8,ymax=1.3,unit=.1,fmt='0.0"×"')
+    text(s,qualification,xx+.18,5.29,3.65,.5,13,True,MUTED)
+takeaway(s,'Read each curve with its control status. GLM establishes the clearest load-dependent MTP tradeoff.')
 
 s=base('Lower token cost is purchased with higher latency','04 / Allocation cost','Illustrative $2.50/GPU-hour × 8 GPUs = $20/node-hour · 16K input / 256 output',source='Source: exact main batch JSONs; report.md §6. Cost = 20 × 1,000,000 / (3,600 × tok/s)',caveat='Includes input work. No quality adjustment, idle-time model, price quote or measured cost per successful task.')
 for panel,j in enumerate([0,3]):
@@ -343,7 +330,7 @@ chart(s,['Original BF16','Alternate BF16','Alternate FP8'],[('GLM',fp,PURPLE)],.
 card(s,9.35,2.55,3.3,3,'PAIRED COMPARISONS','−22% then −25%','Combined: −41%, not −47%.\n\n0.780 × 0.751 ≈ 0.586\nof original throughput',ORANGE)
 takeaway(s,'Geometry, layout, kernels and versions determine whether a dtype has a working execution path.')
 
-def build(output_path=None):
+def build():
     assert len(prs.slides)==TOTAL_COUNT
     # script.md is the complete spoken text; notes also retain timing and evidence cues.
     scripts={}
@@ -363,7 +350,7 @@ def build(output_path=None):
             assert sh.left>=0 and sh.top>=0,(i,sh.name)
             assert sh.left+sh.width<=prs.slide_width+10,(i,sh.name)
             assert sh.top+sh.height<=prs.slide_height+10,(i,sh.name)
-    out=Path(output_path).resolve() if output_path else ROOT/'SyFI_ML_Serving_refined.pptx'; prs.save(out)
+    out=ROOT/'SyFI_ML_Serving_refined.pptx'; prs.save(out)
     md=['---','marp: true','theme: default','paginate: true','size: 16:9','---','',
         '> Two parts: frontier architecture (slides 2–7), then measurements and research analysis (slides 8–16). 16 main slides (18 minutes) + 8 hidden backups. [Full speaking script](script.md). '
         'Editable charts and diagrams are in the PowerPoint. The builder synchronizes visible content; '
@@ -380,7 +367,7 @@ def build(output_path=None):
         md+=[st['source'] or 'Tan Ngo · Professor Kan Zhu and UW SyFI · 6 September 2026','','<!--',notes[i],'-->','']
     (ROOT/'slides.md').write_text('\n'.join(md),encoding='utf-8')
     (ROOT/'artifacts').mkdir(exist_ok=True)
-    (ROOT/'artifacts/presentation_evidence.json').write_text(json.dumps(dict(scope='Exact JSON inputs for charts and result tables; formulas in presentation_design.py; other facts sourced in report.md.',points=evidence),indent=2),encoding='utf-8')
+    (ROOT/'artifacts/presentation_evidence.json').write_text(json.dumps(dict(scope='Exact JSON inputs for charts; formulas in presentation_design.py; other facts sourced in report.md.',points=evidence),indent=2),encoding='utf-8')
     assert sum(s._element.get('show')=='0' for s in prs.slides)==8
     print(f'Created {out}: {MAIN_COUNT} main + 8 hidden backups; {sum(sh.has_chart for s in prs.slides for sh in s.shapes)} editable charts; {TOTAL_COUNT} notes.')
     print('Synchronized slides.md and artifacts/presentation_evidence.json.')

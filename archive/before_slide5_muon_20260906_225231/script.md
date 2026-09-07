@@ -30,20 +30,20 @@ Part two asks where those savings survive in a deployed system. I vary concurren
 My approach is to move from a mechanism to a prediction, then to evidence and a possible correction. Across comparisons, DeepSeek comes first in orange, GLM second in purple, and Qwen third in teal. The measured contribution is their tradeoff map and the debugging evidence behind it.
 <!-- END SCRIPT -->
 
-## Slide 3 — QSA saves work in both indexing and attention
+## Slide 3 — Sparse attention reduces reads; selection has a cost
 
 **1:20 · cumulative 2:40**
 
 <!-- SCRIPT 3 -->
-[Point across the three stages.] Qwen's design addresses two costs: attending to history and finding which history matters. Three of every four layers use GDN's fixed-size state; the remaining QSA layer retrieves selected history.
+[Point across the three designs.] Dense attention considers the full available history. Sparse attention selects a subset, while compression changes how history is represented. These are related but distinct ways to reduce work.
 
-For an illustrative complete prefix of 131,072 tokens, QSA pools index keys in groups of four. The indexer scores 32,768 candidates, selects 512 blocks, then expands them to 2,048 original tokens for core attention. Any incomplete final block is also included. These settings match our saved Qwen configuration.
+For a sequence of length S, dense prefill attention-score work grows quadratically. If each query attends to K selected entries, that attention component is roughly proportional to S times K. But that expression does not include the indexer, top-k selection, gathers or state management. Index scoring can still grow with the history.
 
-The distinction matters: compressed keys guide selection; core attention still reads original token KV. This reduces indexing and attention work without implying a fixed-size KV cache. Scoring still grows with the number of blocks.
+DeepSeek V4 combines sparse selection with compressed representations. Qwen QSA also has a compressed indexer, while its recurrent layers supply a different memory mechanism.
 
-[Point to the published result.] At one million tokens, Qwen reports 7.6 times faster prefill and 4.9 times faster decode than dense GQA for the attention module, including indexing. The prefill test uses sixteen-thousand-token chunks at batch one; decode uses batch four with three additional MTP steps.
+The prediction is a context-dependent crossover: savings become useful when they exceed selection and kernel overhead. Short contexts may not amortize that overhead. Selection quality also matters.
 
-These are published module results, not whole-model speedups or our local H100 measurements. Our study has no matched dense control.
+Our local measurements can characterize the context regime. They do not isolate a sparse-versus-dense speedup because we have no matched dense control.
 <!-- END SCRIPT -->
 
 ## Slide 4 — Compare model size, active parameters and layer mix
@@ -62,18 +62,18 @@ Finally, DeepSeek has 43 sparse-attention layers. GLM combines 34 recurrent KDA 
 
 Parameter-accounting reference for slide 4 (not spoken): DeepSeek's current 290.91B total minus the historical 0.04B MTP bucket is approximately 290.9B. GLM's rounded main buckets (304.42B + 8.92B) give approximately 313.3B. Subtracting 7.43B MTP and 0.56B vision from its 321.34B checkpoint total gives 313.35B; the 0.01B difference reflects bucket rounding, so this is an approximate base count. Qwen's prior analysis explicitly records 176.94B served base parameters, including 51.23B n-gram lookup. Active GEMM estimates remain the current report's 14.08B / 17.38B / 7.27B. Sources: [DeepSeek buckets](deepseek_v4_flash/history/report.md), [GLM buckets](GLM-5.3-Flash/history/report.md), [Qwen buckets](Qwen3.8-Flash-Next-FP8/history/report.md), [current definitions](report.md).
 
-## Slide 5 — Muon: 50% less optimizer state, matrix geometry
+## Slide 5 — Muon changes training updates; AdamW still has a role
 
 **1:15 · cumulative 5:05**
 
 <!-- SCRIPT 5 -->
-[Point to the first two rows.] Muon has two useful distinctions from AdamW. First, AdamW stores a first moment and a second moment for every parameter. Standard Muon stores one momentum value. With both states in FP32, that is eight bytes versus four bytes per parameter: fifty percent less persistent optimizer-state memory on the parameters assigned to Muon.
+Muon belongs in a frontier architecture talk because training efficiency influences which models are practical to build. But it is important to locate that effect correctly.
 
-This does not halve total training memory. Weights, gradients, activations, master weights if used, and temporary workspace remain. Parameters still using AdamW retain its two buffers.
+[Point left.] AdamW uses coordinate-wise moment estimates and decoupled weight decay. [Point right.] Muon transforms a matrix momentum update through approximate orthogonalization, commonly using Newton-Schulz iterations. This changes update geometry and introduces matrix-operation and partitioning costs.
 
-[Point to the geometry row.] AdamW rescales each gradient coordinate using that coordinate's moment history. Muon transforms the matrix update jointly through approximate orthogonalization, usually using Newton-Schulz iterations. Its matrix products couple entries and reshape the update's singular-value spectrum. AdamW's elementwise rescaling does not explicitly normalize these matrix directions. This is matrix geometry, not a claim that Muon computes the full curvature of the loss.
+It is not a blanket replacement. DeepSeek and Qwen document Muon for selected matrix groups and retain AdamW for other parameters. GLM's optimizer recipe is not established by the sources used here. That is a documentation limit, not evidence that it uses a particular alternative.
 
-DeepSeek and Qwen use mixed Muon and AdamW parameter groups; GLM's recipe is not established here. These are training properties, not a direct explanation of our inference throughput results.
+The right evaluation is the quality reached for training time and resources, including optimizer overhead and stability. Muon is not executed in the serving forward pass. Therefore, it cannot directly explain our tokens-per-second ranking. We need to keep training savings separate from inference savings.
 <!-- END SCRIPT -->
 
 ## Slide 6 — Day-0 speculation: ship a draft, still pay for verification

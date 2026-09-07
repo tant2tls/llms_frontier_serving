@@ -89,102 +89,78 @@ My approach is to move from a mechanism to a prediction, then to evidence and a 
 
 ---
 
-## 3. QSA saves work in both indexing and attention
+## 3. Sparse attention reduces reads; selection has a cost
 
-Qwen’s hybrid: three GDN layers keep compact state; one QSA layer retrieves selected history.
+A query needs useful history; the system must find, gather and process it.
 
-Illustrative complete prefix: 131,072 tokens · one query · block size 4 · token budget 2,048
+Dense history
 
-1 / COMPRESS INDEX KEYS
+query × history
 
-32,768 index keys
+All available  
+positions  
+  
+Core prefill:  
+O(S²)
 
-Pool four adjacent keys.  
-4× fewer scoring candidates.
+Sparse selection
 
-2 / SELECT MICRO-BLOCKS
+query × history
 
-512 selected blocks
+Selected entries  
+plus index cost  
+  
+Core attention:  
+O(SK)
 
-Score blocks for this query;  
-keep the most relevant regions.
+Compressed history
 
-3 / READ ORIGINAL TOKENS
+query × history
 
-2,048 tokens
+Summaries  
+plus local tail  
+  
+Fewer entries;  
+extra state
 
-Expand selected blocks;  
-attend to their original KV.
+Sparse path = indexer + top-k + gather + selected attention + state management
 
-→
+Prediction: the crossover depends on context length, selection overhead, kernel efficiency and quality.
 
-→
+**Boundary:** Conceptual operator diagram. Sparse kernel savings and vendor comparisons are not local end-to-end speedups.
 
-Incomplete tail tokens are included too. These counts illustrate work reduction, not measured speedup.
-
-Qwen reports at 1M context vs dense GQA:  7.6× prefill  |  4.9× decode
-
-Two savings: score fewer index keys, then compute attention on fewer original tokens.
-
-**Boundary:** Published module timings include indexing; decode includes 3 MTP steps. Not local H100 or whole-model speedups.
-
-Sources: Qwen3.8-Flash-Next release blog; technical report §2.1.2 / Fig. 6; saved Qwen config
+Sources: DeepSeek-V4 report §2.3; Qwen3.8-Next report §2.1.2; report.md §2
 
 <!--
 SLIDE 3 — 1:20; cumulative 2:40.
 
 FULL SPOKEN SCRIPT
-[Point across the three stages.] Qwen's design addresses two costs: attending to history and finding which history matters. Three of every four layers use GDN's fixed-size state; the remaining QSA layer retrieves selected history.
+[Point across the three designs.] Dense attention considers the full available history. Sparse attention selects a subset, while compression changes how history is represented. These are related but distinct ways to reduce work.
 
-For an illustrative complete prefix of 131,072 tokens, QSA pools index keys in groups of four. The indexer scores 32,768 candidates, selects 512 blocks, then expands them to 2,048 original tokens for core attention. Any incomplete final block is also included. These settings match our saved Qwen configuration.
+For a sequence of length S, dense prefill attention-score work grows quadratically. If each query attends to K selected entries, that attention component is roughly proportional to S times K. But that expression does not include the indexer, top-k selection, gathers or state management. Index scoring can still grow with the history.
 
-The distinction matters: compressed keys guide selection; core attention still reads original token KV. This reduces indexing and attention work without implying a fixed-size KV cache. Scoring still grows with the number of blocks.
+DeepSeek V4 combines sparse selection with compressed representations. Qwen QSA also has a compressed indexer, while its recurrent layers supply a different memory mechanism.
 
-[Point to the published result.] At one million tokens, Qwen reports 7.6 times faster prefill and 4.9 times faster decode than dense GQA for the attention module, including indexing. The prefill test uses sixteen-thousand-token chunks at batch one; decode uses batch four with three additional MTP steps.
+The prediction is a context-dependent crossover: savings become useful when they exceed selection and kernel overhead. Short contexts may not amortize that overhead. Selection quality also matters.
 
-These are published module results, not whole-model speedups or our local H100 measurements. Our study has no matched dense control.
+Our local measurements can characterize the context regime. They do not isolate a sparse-versus-dense speedup because we have no matched dense control.
 
 PRIMARY REFERENCES (checked 6 September 2026)
-https://qwen.ai/blog?id=qwen3.8-flash-next
+https://arxiv.org/html/2606.19348v1
 https://arxiv.org/html/2608.30320v1
-https://huggingface.co/Qwen/Qwen3.8-Flash-Next-FP8
 -->
 
 ---
 
-## 4. Compare model size, active parameters and layer mix
+## 4. Compare the same architectural dimensions
 
-Text-only base model · MTP and vision excluded · B = billion parameters
+All three use MoE; the main contrast is how they represent and retrieve history.
 
 DeepSeek
 
 GLM
 
 Qwen
-
-Base-model params*
-
-≈290.9B
-
-≈313.3B
-
-176.94B
-
-Active params / token†
-
-14.08B
-
-17.38B
-
-7.27B
-
-Routed experts / selected
-
-256 / 6
-
-288 / 8
-
-512 / 10
 
 Attention layers
 
@@ -197,71 +173,107 @@ compressed history
 36 recurrent GDN  
 + 12 QSA
 
-*DeepSeek/GLM: derived from rounded buckets. †Active GEMM path; Qwen’s 51.23B lookup is included only in base total.
+State to manage
 
-Sparse expert use reduces active work; parameter counts alone do not rank serving speed.
+Summaries, indices  
+and local tails
+
+Recurrent checkpoints  
++ retained history
+
+Recurrent checkpoints  
++ retained history
+
+Experts / selected
+
+256 / 6
+
+288 / 8
+
+512 / 10
+
+Active GEMM path*
+
+14.08B
+
+17.38B
+
+7.27B
+
+*Prior tensor analysis; Qwen also has a 51.23B lookup table, not a full per-token GEMM.
+
+DeepSeek compresses history; GLM and Qwen combine recurrence with history retrieval.
 
 | Dimension | DeepSeek | GLM | Qwen |
 | --- | --- | --- | --- |
-| Base-model params* | ≈290.9B | ≈313.3B | 176.94B |
-| Active params / token† | 14.08B | 17.38B | 7.27B |
-| Routed experts / selected | 256 / 6 | 288 / 8 | 512 / 10 |
 | Attention layers | 43 sparse;<br>compressed history | 34 recurrent KDA<br>+ 11 sparse | 36 recurrent GDN<br>+ 12 QSA |
+| State to manage | Summaries, indices<br>and local tails | Recurrent checkpoints<br>+ retained history | Recurrent checkpoints<br>+ retained history |
+| Experts / selected | 256 / 6 | 288 / 8 | 512 / 10 |
+| Active GEMM path* | 14.08B | 17.38B | 7.27B |
 
-**Boundary:** Prior tensor accounting, not a new checkpoint recount. Base totals and active-GEMM estimates are not vendor headline definitions.
+**Boundary:** Configuration facts and prior tensor accounting; these do not isolate the cause of measured speed differences.
 
-Source: report.md §2; per-model history/report.md parameter buckets and recorded configurations
+Source: report.md §2; recorded configuration and tensor analyses
 
 <!--
 SLIDE 4 — 1:10; cumulative 3:50.
 
 FULL SPOKEN SCRIPT
-[Read across the first row.] These are text-only base-model parameter counts, excluding MTP and vision: approximately 291 billion for DeepSeek, 313 billion for GLM, and 177 billion for Qwen. They come from prior tensor accounting, not a new checkpoint recount.
+[Read across the first row.] DeepSeek uses compressed history in a sparse-attention stack. GLM combines 34 recurrent KDA layers with 11 sparse layers. Qwen combines 36 recurrent GDN layers with 12 QSA layers.
 
-[Point to the second row.] The active GEMM estimates are much smaller: 14.08, 17.38 and 7.27 billion parameters per token. Qwen's base total includes a 51.23-billion-parameter lookup table. A lookup touches selected entries, so that full table is not counted as active matrix multiplication.
+[Point to the next row.] DeepSeek must manage summaries, indices and local tails. GLM and Qwen must also manage recurrent checkpoints alongside retained history. This is the main state-management contrast.
 
-The routed expert counts are 256 with six selected for DeepSeek, 288 with eight selected for GLM, and 512 with ten selected for Qwen. More selected experts does not automatically mean more compute because expert dimensions differ.
+All three use MoE, selecting six, eight and ten routed experts respectively. Those counts alone do not rank computation because expert dimensions differ. The prior active GEMM estimates are about fourteen, seventeen and seven billion parameters, with Qwen also carrying a large lookup table.
 
-Finally, DeepSeek has 43 sparse-attention layers. GLM combines 34 recurrent KDA layers with 11 sparse layers; Qwen combines 36 recurrent GDN layers with 12 QSA layers. These dimensions help explain what to measure, but parameter counts alone do not rank serving speed.
+The comparison tells us which work and state to inspect. It does not isolate why one deployment is faster. Every memory budget still includes weights, workspace, graphs and runtime state.
 -->
 
 ---
 
-## 5. Muon: 50% less optimizer state, matrix geometry
+## 5. Muon changes training updates; AdamW still has a role
 
-For matrix parameters optimized with Muon · equal state precision · training updates, not inference
+A matrix-aware optimizer is a training design choice, not a decode kernel.
 
-Muon uses matrix products to couple entries; AdamW’s adaptive scaling treats coordinates separately.
+ADAMW
 
-One state buffer instead of two; matrix geometry instead of coordinate-wise rescaling.
+Coordinate-wise scaling
 
-| Comparison | AdamW | Muon |
-| --- | --- | --- |
-| Stored state / parameter | 2 values: first moment m<br>+ second moment v | 1 value: momentum |
-| FP32 state / parameter | 8 bytes | 4 bytes → 50% less |
-| Update geometry | Elementwise rescaling;<br>no matrix-direction normalization | Joint matrix transformation;<br>approximate orthogonalization |
+Momentum + second-moment scaling  
+Decoupled weight decay  
+Embeddings and other selected groups
 
-**Boundary:** 50% covers persistent optimizer-state tensors only; excludes weights, gradients, activations and workspace. No local training A/B.
+MUON
 
-Sources: Keller Jordan, Muon explanation + reference code; PyTorch / DeepSpeed Muon; AdamW paper
+Matrix update geometry
+
+Momentum → approximate orthogonalization  
+Newton–Schulz matrix operations  
+Matrix-aware partitioning and batching
+
+DeepSeek: mixed Muon/AdamW   |   GLM: not established here   |   Qwen: mixed Muon/AdamW
+
+Evaluate quality reached per training GPU-hour; the optimizer update is absent from serving.
+
+**Boundary:** Published optimizer recipes; no local training comparison. GLM optimizer recipe is not established by the sources used here.
+
+Sources: Jordan, Muon; Loshchilov & Hutter, AdamW; DeepSeek and Qwen reports
 
 <!--
 SLIDE 5 — 1:15; cumulative 5:05.
 
 FULL SPOKEN SCRIPT
-[Point to the first two rows.] Muon has two useful distinctions from AdamW. First, AdamW stores a first moment and a second moment for every parameter. Standard Muon stores one momentum value. With both states in FP32, that is eight bytes versus four bytes per parameter: fifty percent less persistent optimizer-state memory on the parameters assigned to Muon.
+Muon belongs in a frontier architecture talk because training efficiency influences which models are practical to build. But it is important to locate that effect correctly.
 
-This does not halve total training memory. Weights, gradients, activations, master weights if used, and temporary workspace remain. Parameters still using AdamW retain its two buffers.
+[Point left.] AdamW uses coordinate-wise moment estimates and decoupled weight decay. [Point right.] Muon transforms a matrix momentum update through approximate orthogonalization, commonly using Newton-Schulz iterations. This changes update geometry and introduces matrix-operation and partitioning costs.
 
-[Point to the geometry row.] AdamW rescales each gradient coordinate using that coordinate's moment history. Muon transforms the matrix update jointly through approximate orthogonalization, usually using Newton-Schulz iterations. Its matrix products couple entries and reshape the update's singular-value spectrum. AdamW's elementwise rescaling does not explicitly normalize these matrix directions. This is matrix geometry, not a claim that Muon computes the full curvature of the loss.
+It is not a blanket replacement. DeepSeek and Qwen document Muon for selected matrix groups and retain AdamW for other parameters. GLM's optimizer recipe is not established by the sources used here. That is a documentation limit, not evidence that it uses a particular alternative.
 
-DeepSeek and Qwen use mixed Muon and AdamW parameter groups; GLM's recipe is not established here. These are training properties, not a direct explanation of our inference throughput results.
+The right evaluation is the quality reached for training time and resources, including optimizer overhead and stability. Muon is not executed in the serving forward pass. Therefore, it cannot directly explain our tokens-per-second ranking. We need to keep training savings separate from inference savings.
 
 PRIMARY REFERENCES (checked 6 September 2026)
 https://kellerjordan.github.io/posts/muon/
 https://arxiv.org/abs/1711.05101
-https://github.com/KellerJordan/Muon/blob/master/muon.py
-https://pytorch.org/blog/using-muon-optimizer-with-deepspeed/
+https://github.com/KellerJordan/Muon
 -->
 
 ---

@@ -30,50 +30,48 @@ Part two asks where those savings survive in a deployed system. I vary concurren
 My approach is to move from a mechanism to a prediction, then to evidence and a possible correction. Across comparisons, DeepSeek comes first in orange, GLM second in purple, and Qwen third in teal. The measured contribution is their tradeoff map and the debugging evidence behind it.
 <!-- END SCRIPT -->
 
-## Slide 3 — QSA saves work in both indexing and attention
+## Slide 3 — Sparse attention reduces reads; selection has a cost
 
 **1:20 · cumulative 2:40**
 
 <!-- SCRIPT 3 -->
-[Point across the three stages.] Qwen's design addresses two costs: attending to history and finding which history matters. Three of every four layers use GDN's fixed-size state; the remaining QSA layer retrieves selected history.
+[Point across the three designs.] Dense attention considers the full available history. Sparse attention selects a subset, while compression changes how history is represented. These are related but distinct ways to reduce work.
 
-For an illustrative complete prefix of 131,072 tokens, QSA pools index keys in groups of four. The indexer scores 32,768 candidates, selects 512 blocks, then expands them to 2,048 original tokens for core attention. Any incomplete final block is also included. These settings match our saved Qwen configuration.
+For a sequence of length S, dense prefill attention-score work grows quadratically. If each query attends to K selected entries, that attention component is roughly proportional to S times K. But that expression does not include the indexer, top-k selection, gathers or state management. Index scoring can still grow with the history.
 
-The distinction matters: compressed keys guide selection; core attention still reads original token KV. This reduces indexing and attention work without implying a fixed-size KV cache. Scoring still grows with the number of blocks.
+DeepSeek V4 combines sparse selection with compressed representations. Qwen QSA also has a compressed indexer, while its recurrent layers supply a different memory mechanism.
 
-[Point to the published result.] At one million tokens, Qwen reports 7.6 times faster prefill and 4.9 times faster decode than dense GQA for the attention module, including indexing. The prefill test uses sixteen-thousand-token chunks at batch one; decode uses batch four with three additional MTP steps.
+The prediction is a context-dependent crossover: savings become useful when they exceed selection and kernel overhead. Short contexts may not amortize that overhead. Selection quality also matters.
 
-These are published module results, not whole-model speedups or our local H100 measurements. Our study has no matched dense control.
+Our local measurements can characterize the context regime. They do not isolate a sparse-versus-dense speedup because we have no matched dense control.
 <!-- END SCRIPT -->
 
-## Slide 4 — Compare model size, active parameters and layer mix
+## Slide 4 — Compare the same architectural dimensions
 
 **1:10 · cumulative 3:50**
 
 <!-- SCRIPT 4 -->
-[Read across the first row.] These are text-only base-model parameter counts, excluding MTP and vision: approximately 291 billion for DeepSeek, 313 billion for GLM, and 177 billion for Qwen. They come from prior tensor accounting, not a new checkpoint recount.
+[Read across the first row.] DeepSeek uses compressed history in a sparse-attention stack. GLM combines 34 recurrent KDA layers with 11 sparse layers. Qwen combines 36 recurrent GDN layers with 12 QSA layers.
 
-[Point to the second row.] The active GEMM estimates are much smaller: 14.08, 17.38 and 7.27 billion parameters per token. Qwen's base total includes a 51.23-billion-parameter lookup table. A lookup touches selected entries, so that full table is not counted as active matrix multiplication.
+[Point to the next row.] DeepSeek must manage summaries, indices and local tails. GLM and Qwen must also manage recurrent checkpoints alongside retained history. This is the main state-management contrast.
 
-The routed expert counts are 256 with six selected for DeepSeek, 288 with eight selected for GLM, and 512 with ten selected for Qwen. More selected experts does not automatically mean more compute because expert dimensions differ.
+All three use MoE, selecting six, eight and ten routed experts respectively. Those counts alone do not rank computation because expert dimensions differ. The prior active GEMM estimates are about fourteen, seventeen and seven billion parameters, with Qwen also carrying a large lookup table.
 
-Finally, DeepSeek has 43 sparse-attention layers. GLM combines 34 recurrent KDA layers with 11 sparse layers; Qwen combines 36 recurrent GDN layers with 12 QSA layers. These dimensions help explain what to measure, but parameter counts alone do not rank serving speed.
+The comparison tells us which work and state to inspect. It does not isolate why one deployment is faster. Every memory budget still includes weights, workspace, graphs and runtime state.
 <!-- END SCRIPT -->
 
-Parameter-accounting reference for slide 4 (not spoken): DeepSeek's current 290.91B total minus the historical 0.04B MTP bucket is approximately 290.9B. GLM's rounded main buckets (304.42B + 8.92B) give approximately 313.3B. Subtracting 7.43B MTP and 0.56B vision from its 321.34B checkpoint total gives 313.35B; the 0.01B difference reflects bucket rounding, so this is an approximate base count. Qwen's prior analysis explicitly records 176.94B served base parameters, including 51.23B n-gram lookup. Active GEMM estimates remain the current report's 14.08B / 17.38B / 7.27B. Sources: [DeepSeek buckets](deepseek_v4_flash/history/report.md), [GLM buckets](GLM-5.3-Flash/history/report.md), [Qwen buckets](Qwen3.8-Flash-Next-FP8/history/report.md), [current definitions](report.md).
-
-## Slide 5 — Muon: 50% less optimizer state, matrix geometry
+## Slide 5 — Muon changes training updates; AdamW still has a role
 
 **1:15 · cumulative 5:05**
 
 <!-- SCRIPT 5 -->
-[Point to the first two rows.] Muon has two useful distinctions from AdamW. First, AdamW stores a first moment and a second moment for every parameter. Standard Muon stores one momentum value. With both states in FP32, that is eight bytes versus four bytes per parameter: fifty percent less persistent optimizer-state memory on the parameters assigned to Muon.
+Muon belongs in a frontier architecture talk because training efficiency influences which models are practical to build. But it is important to locate that effect correctly.
 
-This does not halve total training memory. Weights, gradients, activations, master weights if used, and temporary workspace remain. Parameters still using AdamW retain its two buffers.
+[Point left.] AdamW uses coordinate-wise moment estimates and decoupled weight decay. [Point right.] Muon transforms a matrix momentum update through approximate orthogonalization, commonly using Newton-Schulz iterations. This changes update geometry and introduces matrix-operation and partitioning costs.
 
-[Point to the geometry row.] AdamW rescales each gradient coordinate using that coordinate's moment history. Muon transforms the matrix update jointly through approximate orthogonalization, usually using Newton-Schulz iterations. Its matrix products couple entries and reshape the update's singular-value spectrum. AdamW's elementwise rescaling does not explicitly normalize these matrix directions. This is matrix geometry, not a claim that Muon computes the full curvature of the loss.
+It is not a blanket replacement. DeepSeek and Qwen document Muon for selected matrix groups and retain AdamW for other parameters. GLM's optimizer recipe is not established by the sources used here. That is a documentation limit, not evidence that it uses a particular alternative.
 
-DeepSeek and Qwen use mixed Muon and AdamW parameter groups; GLM's recipe is not established here. These are training properties, not a direct explanation of our inference throughput results.
+The right evaluation is the quality reached for training time and resources, including optimizer overhead and stability. Muon is not executed in the serving forward pass. Therefore, it cannot directly explain our tokens-per-second ranking. We need to keep training savings separate from inference savings.
 <!-- END SCRIPT -->
 
 ## Slide 6 — Day-0 speculation: ship a draft, still pay for verification
@@ -122,20 +120,20 @@ Concurrency is a client cap, not the instantaneous server batch. Output throughp
 These are named deployment comparisons, with the limits stated before we interpret the curves.
 <!-- END SCRIPT -->
 
-## Slide 9 — Higher concurrency buys throughput at a latency cost
+## Slide 9 — Qwen leads the corrected 16K throughput grid
 
 **1:30 · cumulative 9:55**
 
 <!-- SCRIPT 9 -->
-[Point to the first four rows.] To answer Kan's question about throughput at different batch sizes, we vary the client concurrency cap while keeping input at sixteen thousand tokens and output at 256. The server continuously batches requests, so this cap is not a fixed GPU batch size.
+[Trace the teal curve.] Qwen leads every measured concurrency in the corrected 16K throughput grid. At concurrency sixty-four it produces about 518 output tokens per second, versus 447 for GLM and 389 for DeepSeek: roughly sixteen and thirty-three percent higher.
 
-Qwen leads output throughput at every tested concurrency. At sixty-four, DeepSeek, GLM and Qwen produce about 389, 447 and 518 output tokens per second. These are whole-deployment rates across eight H100s, with input processing included in elapsed time.
+The second result is diminishing return. Sixty-four times more concurrency produces less than five times more aggregate output.
 
-[Point to the last two rows.] The latency winner depends on the metric. GLM gives the earliest median first token at concurrency sixty-four: 2.51 seconds versus 3.64 for DeepSeek and 2.94 for Qwen. Qwen has the lowest median time per output token.
+Why might Qwen be fast? Its smaller selected GEMM path and hybrid attention are plausible contributors. They can reduce work. But the result also depends on kernels, precision, runtime state and scheduling. We did not ablate those components, so this chart does not measure their individual contributions.
 
-Across all three models, increasing concurrency from one to sixty-four yields only 4.6 to 4.9 times more output, while median token latency grows about sixteen to nineteen times. The deployment serves more total work each second, but individual requests receive tokens more slowly.
+That caution matters: the earlier Qwen concurrency-four result was 162 tokens per second, versus 257 in the corrected arm after the startup investigation. The checkpoint was unchanged.
 
-These results compare deployed configurations. They do not isolate prefill computation, identify the dominant bottleneck, or establish equal answer quality. The next slide shows the full token-latency curves.
+The defensible conclusion is a throughput lead for this grid, not a universal architecture or quality ranking. Next I will show the latency price of moving along these curves.
 <!-- END SCRIPT -->
 
 ## Slide 10 — All three buy throughput with higher token latency
@@ -182,18 +180,16 @@ This is not a cache-on versus cache-off speedup.
 Branching and speculative rejection then require safe copies or rollback. Finer checkpoints trade memory and copying for less recomputation. That makes prefix reuse a state-placement and scheduling problem as well as a lookup problem.
 <!-- END SCRIPT -->
 
-## Slide 13 — MTP gains fade as concurrency rises
+## Slide 13 — Compare MTP within each model’s own baseline
 
 **1:10 · cumulative 14:20**
 
 <!-- SCRIPT 13 -->
-[Point to the first row.] One-token MTP improves recorded output throughput at concurrency one by about twenty-five percent for DeepSeek, twenty-four percent for GLM and seventeen percent for Qwen. At concurrency sixty-four, none records a gain. DeepSeek and GLM are close to flat; Qwen loses about seven percent.
+The panels use identical axes but different baseline pairs. Each ratio compares MTP with that model's own paired base; it is not an absolute throughput ranking.
 
-[Point to the acceptance row.] GLM still accepts about seventy-two percent of draft tokens at concurrency sixty-four, yet throughput falls slightly. Acceptance alone cannot predict speedup: committed progress must pay for drafting, verification and state handling. We have not measured which overhead dominates.
+[Read left to right.] DeepSeek's historical pair gains at lighter loads and is approximately flat at concurrency sixty-four, but it uses an older runtime and lacks newer cold telemetry. GLM provides our strongest control: one draft gains twenty-four percent at concurrency one and is approximately flat at sixty-four. Qwen's original pair gains at one and loses at higher concurrency, but startup and pool differences confound that comparison.
 
-Each column uses its own paired baseline. GLM provides the strongest controls. DeepSeek uses historical runs without newer cold telemetry, and Qwen retains startup and pool differences. Small changes have no established statistical significance.
-
-The result motivates testing a load-aware draft budget. It does not establish that such a policy already works, or that MTP should always be enabled.
+The shared question is whether committed progress pays for drafting, verification and state work. Similar curve shapes do not establish the same cause. I would use GLM for the strongest conclusion, and matched reruns for DeepSeek and Qwen before comparing MTP policies across models.
 <!-- END SCRIPT -->
 
 ## Slide 14 — Lower token cost is purchased with higher latency
